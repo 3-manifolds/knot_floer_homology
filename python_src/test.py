@@ -1,0 +1,5 @@
+from . import core
+
+if __name__ == '__main__':
+    import doctest
+    print(doctest.testmod(core))

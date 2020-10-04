@@ -5,6 +5,7 @@
 #include<unordered_map>
 #include<iostream>
 #include<fstream>
+
 using namespace std;
 
 vector<monomial> MonomialStore;
@@ -19,13 +20,27 @@ vector<Gen>   GeneratorList;
 vector<Gen>   NewGeneratorList;
 monomial MonomialOne={0};
 
-int main() {
+/* Usage:
+
+   zs_hfk PD_file_name prime
+
+*/
+
+int main(int argc, char* argv[]) {
     string FileName;
     int Prime;
 
+    if (argc < 3){
+	cout<<"Not enough arguments.\n";
+	exit(1);
+    }
+
+    /*
     cout<<"Enter a filename that contains one or more knots in Planar Diagram format:\n";
     cout.flush();
     cin>>FileName;
+    */
+    FileName = argv[1];
     ifstream inFile;
     inFile.open(FileName);
     if (inFile.is_open() == false) { 
@@ -33,9 +48,13 @@ int main() {
       exit(1); 
     }
 
+    /*
     cout<<"and a prime number:  "<<endl;
     cout.flush();
     cin>>Prime;
+    */
+
+    Prime = stoi(argv[2]);
     bool isPrime = true;
     if (Prime < 2) 
       isPrime = false;
