@@ -1,0 +1,5 @@
+
+Right handed trefoil knot:
+PD[4,2,5,1,
+2,6,3,5,
+6,4,1,3]
