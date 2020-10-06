@@ -36,8 +36,8 @@ props_computed = [('rank', 'Total rank', int),
 def run_ZS_HFK_on_PD_data(PD_data_string, prime=2):
     """
     >>> trefoil = 'PD[(4,2,5,1),(2,6,3,5),(6,4,1,3)]'
-    >>> len(run_ZS_HFK_on_PD_data(trefoil))
-    250
+    >>> run_ZS_HFK_on_PD_data(trefoil).strip().endswith('Epsilon : 1')
+    True
     """
     tmpdir = tempfile.mkdtemp()
     prime = repr(prime)
