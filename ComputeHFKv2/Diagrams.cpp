@@ -1,24 +1,21 @@
-#include <iostream>
-#include<vector>
-#include<algorithm>
-#include<string>
-#include<iostream>
 #include "Diagrams.h"
+
+#include <algorithm>
 
 using namespace std;
 
-void MorseCode::Print(ostream & os) {
+void MorseCode::Print(ostream & os) const {
   os<<"Morse Code: ";
-  for (int i = 0; i < MorseList.size(); i++)
-    if (MorseList[i] >999)
-      os<<"Max("<< MorseList[++i]<<"), ";
-    else if (MorseList[i] >-1000)
-      os<<MorseList[i]<<", ";
-    else if (i < MorseList.size()-1)
+  for (int i = 0; i < _morseList.size(); i++)
+    if (_morseList[i] >999)
+      os<<"Max("<< _morseList[++i]<<"), ";
+    else if (_morseList[i] >-1000)
+      os<<_morseList[i]<<", ";
+    else if (i < _morseList.size()-1)
       os<<"Min, ";   
     else 
       os<<"Min.\n";
-  os<<"Girth: "<<Girth<<"\n\n";
+  os<<"Girth: "<<_girth<<"\n\n";
 }
 
 void PlanarDiagram::Print(ostream & os) {
@@ -69,7 +66,7 @@ bool PlanarDiagram::R1Reducible() {
   return false;
 }
 
-PlanarDiagram::PlanarDiagram(string S){
+PlanarDiagram::PlanarDiagram(const std::string &S){
   ListOfTuples = vector<int>();  
   int x = '0'; 
   int y = '9';
