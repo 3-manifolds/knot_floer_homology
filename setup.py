@@ -6,11 +6,16 @@ import re, sys, os, shutil, glob, subprocess
 version = re.search("__version__ = '(.*)'",
                     open('python_src/__init__.py').read()).group(1)
 
+cpp_dir = 'ComputeHFKv2'
+cpp_sources = glob.glob(cpp_dir + '/*.cpp')
+cpp_sources.remove(cpp_dir + '/Main.cpp')
+
 hfk = Extension(
     name = 'zs_hfk/_hfk',
-    sources = ['cython_src/_hfk.c'],
-    include_dirs = ['ComputeHFKv2'],
-    extra_link_args = ['-Llib', '-lhfk']
+    sources = ['cython_src/_hfk.c'] + cpp_sources,
+    include_dirs = [cpp_sources],
+    extra_link_args = ['-Llib'],
+    extra_compile_args = ['-O3'],
 )
 
 class HFKClean(Command):
@@ -28,13 +33,11 @@ class HFKClean(Command):
         for file in glob.glob('*.pyc') + glob.glob('cython_src/*.c'):
             if os.path.exists(file):
                 os.remove(file)
+
 if 'clean' not in sys.argv:
     file = 'cython_src/_hfk.pyx'
-    library = 'lib/libhfk.a'
     if os.path.exists(file):
         cythonize([file])
-    if not os.path.exists(library):
-        subprocess.check_call(['make', '-C', 'ComputeHFKv2'])
 
 setup(
     name='zs_hfk',
