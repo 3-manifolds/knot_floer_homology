@@ -207,20 +207,22 @@ PDCodeToMorseAndHFK(
 	Error << "Girth number exceeds " << 2*MAXBRIDGE;
       } else {
 	M.Print(Morse);
-	KnotFloerComplex KFC=ComputingKnotFloer(M, prime);
-	HFK << "{" << endl;
-	ITEM(HFK, "modulus", prime);
-	HFK << "  \"ranks\": ";
-	KnotFloerRanksAsDict(KFC, HFK);
-	HFK << "," << endl;
-	ITEM(HFK, "total rank", KFC.Generators.size());
-	ITEM(HFK, "Seifert genus", Genus(KFC));
-	ITEM(HFK, "fibered", (Fibered(KFC) ? "True" : "False"));
-	ITEM(HFK, "L-space knot", (LSpaceKnot(KFC) ? "True" : "False"));
-	ITEM(HFK, "tau", Tau(KFC));
-	ITEM(HFK, "nu", Nu(KFC));
-	ITEM(HFK, "epsilon", Epsilon(KFC));
-	HFK << "}" << endl;
+	if (hfk) {
+	    KnotFloerComplex KFC=ComputingKnotFloer(M, prime);
+	    HFK << "{" << endl;
+	    ITEM(HFK, "modulus", prime);
+	    HFK << "  \"ranks\": ";
+	    KnotFloerRanksAsDict(KFC, HFK);
+	    HFK << "," << endl;
+	    ITEM(HFK, "total rank", KFC.Generators.size());
+	    ITEM(HFK, "Seifert genus", Genus(KFC));
+	    ITEM(HFK, "fibered", (Fibered(KFC) ? "True" : "False"));
+	    ITEM(HFK, "L-space knot", (LSpaceKnot(KFC) ? "True" : "False"));
+	    ITEM(HFK, "tau", Tau(KFC));
+	    ITEM(HFK, "nu", Nu(KFC));
+	    ITEM(HFK, "epsilon", Epsilon(KFC));
+	    HFK << "}" << endl;
+	}
       }
     }
   }
