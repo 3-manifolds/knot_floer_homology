@@ -1,0 +1,26 @@
+CXXFLAGS := -std=c++11 -O3 -g -mmacosx-version-min=10.9
+BUILD := build
+LIB := ../lib
+OBJS := $(addprefix $(BUILD)/, HFKLib.o Utility.o Min.o Max.o Crossing.o Simplify.o \
+ HomologyRank.o Report.o Diagrams.o Alternating.o KnotFloer.o )
+
+$(BUILD)/%.o : %.cpp
+	g++ -c $(CXXFLAGS) $< -o $@
+
+
+lib: $(OBJS) | $(LIB)
+	ar -ruv $(LIB)/libhfk.a $(OBJS)
+
+$(OBJS): | $(BUILD)
+
+$(BUILD):
+	mkdir $(BUILD)
+
+$(LIB):
+	mkdir $(LIB)
+
+.PHONY: clean
+clean:
+	rm -rf $(BUILD)
+
+
