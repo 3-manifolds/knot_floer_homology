@@ -27,4 +27,6 @@ def pd_to_hfk(pd, int prime=2):
     if error_string:
         raise ValueError(error_string)
     else:
-        return hfk_string
+        result = {}
+        exec('result.update(%s)'%hfk_string)
+        return result

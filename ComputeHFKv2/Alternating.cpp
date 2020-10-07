@@ -34,13 +34,15 @@ bool ExtendableA(idem x, int n, int Cor)
 {   if(Cor==0)  return  (x & (1<< n));
     if(Cor==3)  return !(x & (1<< n));
     if(Cor==2)  return ( !(x & (1<< n)) and (x & (1<<(n-1))) );
-    if(Cor==1)  return ( !(x & (1<< n)) and (x & (1<<(n+1))) ); 
+    if(Cor==1)  return ( !(x & (1<< n)) and (x & (1<<(n+1))) );
+    return -1;
 }
 
 idem ExtendA(idem x, int n, int Cor)
 {   if(Cor==1)  return x-(1<<n);
     if(Cor==2)  return x+(1<<(n-1)); 
     if(Cor==0 or Cor==3)  return x;
+    return -1;
 }
 
 vector<Term> AfterCrossingAlt(vector<Term> Old, int Crossing)

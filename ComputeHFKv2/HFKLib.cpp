@@ -3,6 +3,8 @@
 #include <vector>
 #include <map>
 #include <unordered_map>
+#include <set>
+#include <algorithm>
 #include <sstream>
 #include <iostream>
 #include <string>
@@ -10,6 +12,8 @@
 #include <stdlib.h>
 
 using namespace std;
+
+// Global variables used by functions called from this module.
 
 vector<monomial> MonomialStore;
 unordered_map <monomial,int,Hash> MonomialMap;
@@ -23,57 +27,178 @@ vector<Gen>   GeneratorList;
 vector<Gen>   NewGeneratorList;
 monomial MonomialOne={0};
 
-extern "C" void
-PDCodeToMorseAndHFK(
-  char *pd,
-  int Prime,
-  char **morse,
-  char **hfk,
-  char **error)
-{
-  ostringstream Error, Morse, HFK;
-  bool isPrime = true;
-  string S;
-  char *p;
+// Unexported declarations from Alternating.cpp 
 
-  if (Prime < 2) {
-    isPrime = false;
-  } else {
-    for (int i = 2; i < Prime; i++) {
-      if (Prime % i == 0) {
-	isPrime = false;
-	break;
-      }
+struct Term{
+  idem Idem;
+  int Alexander;
+  int Coeff;
+};
+extern vector<Term> AfterMaxAlt(vector<Term> Old, int Position);
+extern vector<Term> AfterMinAlt(vector<Term> Old);
+extern vector<Term> AfterCrossingAlt(vector<Term> Old, int Crossing);
+extern int Signature (PlanarDiagram Diag);
+  
+// static helpers
+
+#define ITEM(stream, key, value)					\
+  stream << "  \"" << (key) << "\": " << (value) << "," << endl;
+
+static bool isPrime(int n) {
+  if (n < 2) {
+    return false;
+  }
+  for (int i = 2; i < n; i++) {
+    if (n % i == 0) {
+      return false;
     }
   }
-  if (!isPrime) {
-    Error << Prime << " " << "is not a prime";
+  return true;
+}
+
+static void createCString(char **p, ostringstream& s) {
+  if (p) {
+    *p = (char *) malloc(s.str().length() + 1);
+    strcpy(*p, s.str().c_str());
   }
+}
+
+static void readPDCode(char *pd, string& s) {
+  char *p;
   for (p = pd; *p != 0; p++) {
     if (*p == 'D') {
       break;
     }
   }
   for (; *p != 0; p++) {
-    S.push_back(*p);
+    s.push_back(*p);
   }
-  PlanarDiagram Diag = PlanarDiagram(S);
-  if (Diag.NotValid()) {
+}
+
+static void KnotFloerRanksAsDict(const KnotFloerComplex& KFC, ostream& os)
+{
+  auto Map = KnotFloerRanks(KFC);
+
+  os << "{" << endl;
+  for(auto X: Map) {
+    os << "  (" << X.first.first << "," << X.first.second << "): ";
+    os << X.second << "," << endl;
+  }
+  os << "}" << endl;
+}
+
+// Variant of KnotFloerForAlternatingKnots with a different output format.
+
+static void KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag, ostream& os) {
+  vector<int> Morse = Diag.GetSmallGirthMorseCode(200).GetMorseList();
+  Bridge=1;
+  Term G1; G1.Alexander = 0; G1.Coeff = 1; G1.Idem = 2;
+  vector<Term> Current; Current.push_back(G1);
+  UpwardList.clear();
+  if(Morse[0]==1000) {
+    UpwardList.push_back(1);
+    UpwardList.push_back(0);
+  }
+  if(Morse[0]==1001) {
+    UpwardList.push_back(0);
+    UpwardList.push_back(1);
+  }
+  int Steps=Morse.size();
+  for(int i=2; i< Steps -1 ; i++) {
+    if (Morse[i] == 1000) {
+      int Position = Morse[i+1];
+      Current = AfterMaxAlt(Current,Position);
+      UpwardList[Position-1]=1;
+      UpwardList[Position]=0;
+      i++;
+    } else if (Morse[i] == 1001) {
+      int Position = Morse[i+1];
+      Current = AfterMaxAlt(Current,Position);
+      UpwardList[Position-1] = 0;
+      UpwardList[Position] = 1;
+      i++;
+    } else if (Morse[i]==-1000) {
+	Current=AfterMinAlt(Current);
+    } else if (Morse[i] < 2*Bridge && Morse[i] > -(2*Bridge) && Morse[i] != 0) {
+	Current=AfterCrossingAlt(Current, Morse[i]);
+    }
+  }
+
+  int delta=-Signature(Diag)/2;
+  map<int,int> Range;
+  for(int i = 0; i < Current.size(); i++) {
+    Term G = Current[i];
+    Range[G.Alexander] = G.Coeff;
+  }
+  int TotalRank=0;
+  bool LSpaceKnot=true;
+  os << "{" << endl;
+  os << "  \"ranks\": {" << endl;
+  for(auto X: Range) {
+    int a = X.first, b = abs(X.second);
+    os << "    (" << a/2 << "," << a/2-delta << "): " << b << "," << endl;
+    TotalRank += b;
+    if (b != 1) {
+      LSpaceKnot = false;
+    }
+  }
+  os << "  }," << endl;
+  int MaxAlex = -(*Range.begin()).first;
+  int LeadingCoeff = (*Range.begin()).second;
+  ITEM(os, "total rank", TotalRank);
+  ITEM(os, "Seifert genus", MaxAlex/2);
+  ITEM(os, "fibered", (LeadingCoeff == 1 || LeadingCoeff == -1) ? "True" : "False"); 
+  ITEM(os, "L-space knot", LSpaceKnot ? "True" : "False");
+  ITEM(os, "tau", delta);
+  ITEM(os, "nu", delta);
+  ITEM(os, "epsilon", (delta > 0) - (delta < 0)); 
+  os << "}" << endl;
+}
+
+// The one and only function exported by this module.
+
+extern "C" void
+PDCodeToMorseAndHFK(
+  char *pd,
+  int prime,
+  char **morse,
+  char **hfk,
+  char **error)
+{
+  ostringstream Error, Morse, HFK;
+  string PDString;
+  bool inputIsInvalid = false;
+
+  if (error == NULL) {
+    throw runtime_error("PDCodeToMorseAndHFK: error must not be null.");
+  }
+  readPDCode(pd, PDString);
+  PlanarDiagram Diag = PlanarDiagram(PDString);
+  if (!isPrime(prime)) {
+    Error << prime << " " << "is not a prime";
+    inputIsInvalid = true;
+  }
+  if (!inputIsInvalid && Diag.NotValid()) {
     Error << "The PD code does not describe a knot projection.";
+    inputIsInvalid = true;
   }
-  if (Diag.R1Reducible()) {
+  if (!inputIsInvalid && Diag.R1Reducible()) {
     Error << "The PD code describes a knot projection with a reducing Reidemeister 1 move";
+    inputIsInvalid = true;
   }
-  MorseCode LastCheckBeforeComputation = Diag.GetSmallGirthMorseCode(1);
-  if (LastCheckBeforeComputation.GetMorseList().size() == 0) {
-    Error << "Could not compute a small girth Morse code";
+  if (!inputIsInvalid) {
+    MorseCode LastCheckBeforeComputation = Diag.GetSmallGirthMorseCode(1);
+    if (LastCheckBeforeComputation.GetMorseList().size() == 0) {
+      Error << "Could not compute a small girth Morse code";
+      inputIsInvalid = true;
+    }
   }
-  if (Error.str().empty()) {
+  if (!inputIsInvalid) {
     if(Diag.Alternating()) {
       MorseCode M = Diag.GetSmallGirthMorseCode(10);
       M.Print(Morse);
       if (hfk) {
-	KnotFloerForAlternatingKnots(Diag, HFK);
+	KnotFloerForAlternatingKnotsAsDict(Diag, HFK);
       }
     } else {
       MorseCode M = Diag.GetSmallGirthMorseCode();
@@ -81,31 +206,24 @@ PDCodeToMorseAndHFK(
 	Error << "Girth number exceeds " << 2*MAXBRIDGE;
       } else {
 	M.Print(Morse);
-	KnotFloerComplex KFC=ComputingKnotFloer(M, Prime);
-	ReportKnotFloerRanks(KFC, HFK);
-	HFK << "Total rank : " << KFC.Generators.size() << endl;
-	int genus = Genus(KFC);
-	HFK << "Seifert genus : " << genus << endl;
-	HFK << "Fibered : " << (Fibered(KFC) ? "Yes" : "No") << endl;
-	HFK << "L-space knot : " << (LSpaceKnot(KFC) ? "Yes" : "No") << endl;
-	HFK << "Tau : " << Tau(KFC) << endl;
-	HFK << "Nu  : " << Nu(KFC) << endl;
-	int epsilon = Epsilon(KFC);
-	HFK << "Epsilon : " << Epsilon(KFC) << endl;
+	KnotFloerComplex KFC=ComputingKnotFloer(M, prime);
+	HFK << "{" << endl;
+	ITEM(HFK, "modulus", prime);
+	HFK << "  \"ranks\": ";
+	KnotFloerRanksAsDict(KFC, HFK);
+	HFK << "," << endl;
+	ITEM(HFK, "total rank", KFC.Generators.size());
+	ITEM(HFK, "Seifert genus", Genus(KFC));
+	ITEM(HFK, "fibered", (Fibered(KFC) ? "True" : "False"));
+	ITEM(HFK, "L-space knot", (LSpaceKnot(KFC) ? "True" : "False"));
+	ITEM(HFK, "tau", Tau(KFC));
+	ITEM(HFK, "nu", Nu(KFC));
+	ITEM(HFK, "epsilon", Epsilon(KFC));
+	HFK << "}" << endl;
       }
     }
   }
-  string errorString = Error.str();
-  *error = (char *) malloc(errorString.length() + 1);
-  strcpy(*error, errorString.c_str());
-  if (morse) {
-    string morseString = Morse.str();
-    *morse = (char *) malloc(morseString.length() + 1);
-    strcpy(*morse, morseString.c_str());
-  }
-  if (hfk) {
-    string hfkString = HFK.str();
-    *hfk = (char *) malloc(hfkString.length() + 1);
-    strcpy(*hfk, hfkString.c_str());
-  }
+  createCString(error, Error);
+  createCString(morse, Morse);
+  createCString(hfk, HFK);
 }

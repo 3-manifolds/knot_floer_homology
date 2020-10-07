@@ -3,6 +3,7 @@ BUILD := build
 LIB := ../lib
 OBJS := $(addprefix $(BUILD)/, HFKLib.o Utility.o Min.o Max.o Crossing.o Simplify.o \
  HomologyRank.o Report.o Diagrams.o Alternating.o KnotFloer.o )
+HDRS := Alg.h Diagrams.h
 
 $(BUILD)/%.o : %.cpp
 	g++ -c $(CXXFLAGS) $< -o $@
@@ -11,7 +12,7 @@ $(BUILD)/%.o : %.cpp
 lib: $(OBJS) | $(LIB)
 	ar -ruv $(LIB)/libhfk.a $(OBJS)
 
-$(OBJS): | $(BUILD)
+$(OBJS): $(HDRS) | $(BUILD)
 
 $(BUILD):
 	mkdir $(BUILD)

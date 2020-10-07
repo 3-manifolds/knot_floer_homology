@@ -21,13 +21,15 @@ inline  bool Extendable(idem x, int n, int Cor)
 {   if(Cor==North) return  (x & (1<< n));
     if(Cor==South) return !(x & (1<< n));
     if(Cor==West)  return ( !(x & (1<< n)) and (x & (1<<(n-1))) );
-    if(Cor==East)  return ( !(x & (1<< n)) and (x & (1<<(n+1))) ); 
+    if(Cor==East)  return ( !(x & (1<< n)) and (x & (1<<(n+1))) );
+    return -1; /* Avoid compiler warning */
 }
 
 inline  idem Extend(idem x, int n, int Cor)
 {   if(Cor==North or Cor==South) return x;
     if(Cor==East) return x-(1<<n);
-    if(Cor==West) return x+(1<<(n-1)); 
+    if(Cor==West) return x+(1<<(n-1));
+    return -1; /* Avoid compiler warning */
 }
 
 ////////////
