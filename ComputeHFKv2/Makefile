@@ -1,4 +1,9 @@
+ifeq ($(shell uname -s),Darwin)
 CXXFLAGS := -std=c++11 -O3 -g -mmacosx-version-min=10.9
+else
+CXXFLAGS := -std=c++11 -O3 -g
+endif
+
 BUILD := build
 LIB := ../lib
 OBJS := $(addprefix $(BUILD)/, HFKLib.o Utility.o Min.o Max.o Crossing.o Simplify.o \
