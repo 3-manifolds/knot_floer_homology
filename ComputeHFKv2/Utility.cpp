@@ -77,7 +77,8 @@ int Mult(idem I1, idem I2, idem I3, int m1, int m2){
        if(I3 & 1) a3++;
        if((a1>a2 and a2<a3) or (a1<a2 and a2>a3)) 
              X[j]=X1[j]+X2[j]+1;
-       else  X[j]=X1[j]+X2[j]; j++; I1=I1>>1; I2=I2>>1; I3=I3>>1;}
+       else  X[j]=X1[j]+X2[j];
+       j++; I1=I1>>1; I2=I2>>1; I3=I3>>1;}
  
     return MonomialLookUp(X);    
 }

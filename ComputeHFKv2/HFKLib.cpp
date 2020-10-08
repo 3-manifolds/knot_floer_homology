@@ -127,7 +127,7 @@ static void KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag, ostream& os) 
 
   int delta=-Signature(Diag)/2;
   map<int,int> Range;
-  for(int i = 0; i < Current.size(); i++) {
+  for(size_t i = 0; i < Current.size(); i++) {
     Term G = Current[i];
     Range[G.Alexander] = G.Coeff;
   }

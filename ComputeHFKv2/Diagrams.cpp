@@ -9,7 +9,7 @@ using namespace std;
 
 void MorseCode::Print(ostream & os) {
   os<<"Morse Code: ";
-  for (int i = 0; i < MorseList.size(); i++)
+  for (size_t i = 0; i < MorseList.size(); i++)
     if (MorseList[i] >999)
       os<<"Max("<< MorseList[++i]<<"), ";
     else if (MorseList[i] >-1000)
@@ -24,7 +24,7 @@ void MorseCode::Print(ostream & os) {
 void PlanarDiagram::Print(ostream & os) {
   vector<int> PD = ListOfTuples;
   os<<"Planar Diagram: [";
-  for (int i = 0; i < PD.size()/4; i++)
+  for (size_t i = 0; i < PD.size()/4; i++)
     os<<"["<<PD[4*i]<<", "<<PD[4*i+1]<<", "<<PD[4*i+2]<<", "<<PD[4*i+3]<<"], ";
   os<<"]\n";
 } 
@@ -75,7 +75,7 @@ PlanarDiagram::PlanarDiagram(string S){
   int y = '9';
   int a = 0; 
   bool BuildingInt = false; 
-    for (int i = 0; i < S.size(); i++) 
+    for (size_t i = 0; i < S.size(); i++) 
       if (S[i] < x or S[i] > y) {
 	if (BuildingInt == true) { //just finished reading an integer  
 	  ListOfTuples.push_back(a);  a = 0; BuildingInt = false;
@@ -151,7 +151,7 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) {
              CrossingUsed[NextC]=1;
              vector<int> V(4); for(int k=0; k<4; k++) V[k]=PD[4*NextC +k];
              
-             int t=0;
+             size_t t=0;
              while(t<temp.size() and temp[t] != V[0] and temp[t] != V[1] 
                                  and temp[t] != V[2] and temp[t] != V[3])
 	            t++;

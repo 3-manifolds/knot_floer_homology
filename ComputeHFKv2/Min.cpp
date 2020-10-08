@@ -19,12 +19,12 @@ vector<Arrow> Join(vector<Arrow> &  X, vector<Arrow> & Y)
 {   vector<Arrow> Z; 
     sort(X.begin(),X.end(), [](Arrow a, Arrow b){return a.EndingGen < b.EndingGen;} ); 
     sort(Y.begin(),Y.end(), [](Arrow a, Arrow b){return a.StartingGen < b.StartingGen;} );
-    int y1=0; int y2=0; int x1=0; int x2=0;
-    for(int Middle=0; Middle<GeneratorList.size(); Middle++)
+    size_t y1=0; size_t y2=0; size_t x1=0; size_t x2=0;
+    for(size_t Middle=0; Middle<GeneratorList.size(); Middle++)
        {while(x2<X.size() and X[x2].EndingGen==Middle) x2++;
 	while(y2<Y.size() and Y[y2].StartingGen==Middle) y2++;
-        for(int i=x1; i<x2; i++)
-          for(int j=y1; j<y2; j++) 
+        for(size_t i=x1; i<x2; i++)
+          for(size_t j=y1; j<y2; j++)
 		    {Arrow C; Arrow A=X[i]; Arrow B=Y[j];
                      int From=A.StartingGen; int To=B.EndingGen; 
 		     idem I1=GeneratorList[From].Idem; 
@@ -112,7 +112,7 @@ void AfterMin()
     ArrowList.swap(NewArrowList);
     RemoveMod(ArrowList);
     int Write=0;
-    for(int i=0; i<GeneratorList.size();i++ ) //Update GeneratorList
+    for(size_t i=0; i<GeneratorList.size();i++ ) //Update GeneratorList
        {Gen G=GeneratorList[i]; 
         if (G.Idem %8 ==4) 
           {G.Idem=G.Idem/4 -1;  
@@ -122,13 +122,13 @@ void AfterMin()
     GeneratorList.erase(GeneratorList.begin()+Write, GeneratorList.end());
     
     vector<int> temp;  //Additional update     
-    for(int i=0; i<MatchingList.size()-2; i++)
+    for(size_t i=0; i<MatchingList.size()-2; i++)
       {if (i==aa-3) temp.push_back(bb-2);
        if (i==bb-3) temp.push_back(aa-2);
        if (i !=aa-3 and i != bb-3) temp.push_back(MatchingList[i+2]-2); }
     MatchingList=temp;
     vector<int> temp2;
-    for (int i=0; i<UpwardList.size()-2;i++) temp2.push_back(UpwardList[i+2]);
+    for (size_t i=0; i<UpwardList.size()-2;i++) temp2.push_back(UpwardList[i+2]);
     UpwardList=temp2;
     Bridge=Bridge-1;
 

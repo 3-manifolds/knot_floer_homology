@@ -24,7 +24,9 @@ void Update(vector<Term> & Old)
        if(a.Idem==b.Idem and a.Alexander==b.Alexander) a.Coeff+=b.Coeff;
        else if(a.Coeff==0) a=b;
        else {Old[Write]=a; Write++; a=b;}
-    if(a.Coeff!=0) Old[Write]=a; Write++;
+    if(a.Coeff!=0)
+	Old[Write]=a;
+    Write++;
     Old.erase(Old.begin()+Write, Old.end()); 
 }
 
@@ -73,7 +75,7 @@ vector<Term> AfterMinAlt(vector<Term> Old)
         else  {G.Idem= G.Idem/4 -1; New.push_back(G);} 
        }
     vector<int> temp;
-    for (int i=0; i<UpwardList.size()-2;i++) 
+    for (size_t i=0; i<UpwardList.size()-2;i++) 
        temp.push_back(UpwardList[i+2]);
     UpwardList=temp;
     Bridge=Bridge-1;
@@ -166,7 +168,7 @@ void KnotFloerForAlternatingKnots(PlanarDiagram Diag, ostream & os)
 
     int delta=-Signature(Diag)/2;
     map<int,int> Range;
-    for(int i=0; i<Current.size(); i++) 
+    for(size_t i=0; i<Current.size(); i++) 
 	{Term G=Current[i]; Range[G.Alexander]=G.Coeff;}
       
     int TotalRank=0;  

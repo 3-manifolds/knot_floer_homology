@@ -29,7 +29,7 @@ void Simplify()
     for(int i=0; i<x; i++)
 	{vector<int> X=Maps1[i]; if(X.size()==0) continue;
 	 bool FoundShortArrow=false;  
-	 for(int j=0; j<X.size(); j++)
+	 for(size_t j=0; j<X.size(); j++)
 	    {Arrow Y=ArrowList[X[j]]; int a=Y.StartingGen; int b=Y.EndingGen;
              if (Y.Coeff !=0 and Y.MonomialIndex==0 and
                  GeneratorList[a].Idem == GeneratorList[b].Idem)
@@ -46,12 +46,12 @@ void Simplify()
     int OldSize=y;
     int CurrentSize=y;//current size of ArrowList
     //we start the contracting algorithm:
-    for(int i=0; i<Candidates.size(); i++)      
+    for(size_t i=0; i<Candidates.size(); i++)      
 	{int From=(Candidates[i]).second; //Trying to eliminate "From"
 	 vector<int> X=Maps1[From]; if( X.size()==0 ) continue;
-         int index=-1; int To;  int Connectivity=1000000;
+         int index=-1; int To;  size_t Connectivity=1000000;
          //looking for a short differential out of "From"
-         for(int j=0; j<X.size(); j++) 
+         for(size_t j=0; j<X.size(); j++) 
 	   {Arrow Arr=ArrowList[X[j]];  int c=Arr.EndingGen;
             if( Arr.Coeff !=0 
                 and GeneratorList[From].Idem == GeneratorList[c].Idem 
@@ -134,7 +134,7 @@ void Simplify()
              
              //Candidates[0] to Candidates[i] are dealt with.
              //Reorder the remaining part of the Candidate list:
-             for(int j=i+1; j<Candidates.size();j++)
+             for(size_t j=i+1; j<Candidates.size();j++)
 	     Candidates[j].first=Maps1[Candidates[j].second].size();
              sort(Candidates.begin()+i+1, Candidates.end());
 	    }
@@ -150,7 +150,7 @@ void Simplify()
                 {GeneratorList[Write]=GeneratorList[i]; Write++;}
        GeneratorList.erase(GeneratorList.begin()+Write, GeneratorList.end());        
        Write=0;
-       for(int j=0; j<ArrowList.size(); j++)
+       for(size_t j=0; j<ArrowList.size(); j++)
 	   if(ArrowList[j].Coeff !=0) {ArrowList[Write]=ArrowList[j]; Write++;}
         ArrowList.erase(ArrowList.begin()+Write, ArrowList.end());
       }
