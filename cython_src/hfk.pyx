@@ -1,5 +1,5 @@
 # distutils: language = c++
-# cython: language_level = 2
+# cython: language_level = 3
 
 from libc.stdlib cimport free
 cdef extern from "HFKLib.h":
@@ -60,5 +60,5 @@ def pd_to_hfk(pd, int prime=2):
         raise ValueError(error_string)
     else:
         result = {}
-        exec('result.update(%s)'%hfk_string)
+        exec('result.update(%s)'%hfk_string, {'result':result})
         return result
