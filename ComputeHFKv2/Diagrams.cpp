@@ -38,11 +38,11 @@ bool PlanarDiagram::NotValid() const { //partial check on data, also checks if i
     return true;
   vector<int> CrList = PD;
   sort(CrList.begin(), CrList.end());
-  size_t x=y/4;
-  for (size_t i = 0; i < 2*x; i++)
+  int x=y/4;
+  for (int i = 0; i < 2*x; i++)
     if (CrList[i] != (i/2)+1) 
       return true;
-  for (size_t i = 0; i < x; i++)
+  for (int i = 0; i < x; i++)
     if (PD[4*i]-PD[4*i+2] != -1 &&  PD[4*i]-PD[4*i+2] != 2*x-1) 
       return true;
     else if (abs(PD[4*i+1] -PD[4*i+3]) != 1 && abs(PD[4*i+1]-PD[4*i+3]) != 2*x-1)
