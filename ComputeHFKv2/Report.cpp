@@ -38,7 +38,7 @@ bool LSpaceKnot(const KnotFloerComplex & KFC)
     auto Map=KnotFloerRanks(KFC);
     for(auto X: Map)
        {pair<int,int> B=X.first;  
-        if(X.second >1 or B.first <=A.first or B.second <=A.second) b=false;
+        if(X.second >1 || B.first <=A.first || B.second <=A.second) b=false;
         A=B;
        }
     return b;
@@ -59,7 +59,7 @@ KnotFloerComplex DualComplex(const KnotFloerComplex & KFC)
 int LowestFiltrationWithMaslovZero(const KnotFloerComplex & KFC)
 {   int ans=Genus(KFC);
     for(KnotFloerGen G: KFC.Generators) 
-         if(G.Alexander <ans and G.Maslov==0) ans=G.Alexander;
+         if(G.Alexander <ans && G.Maslov==0) ans=G.Alexander;
     return ans;
 }
 
@@ -67,7 +67,7 @@ int Tau(const KnotFloerComplex & KFC)
 {   int x=KFC.Generators.size();     
     int Rank1=0; int Rank2=1; int genus=Genus(KFC); 
     int j= LowestFiltrationWithMaslovZero(KFC);       
-    while(Rank2==Rank1+1 and j<=genus)
+    while(Rank2==Rank1+1 && j<=genus)
 	 {ChainComplex C1;  C1.Prime=KFC.Prime; 
           //Constructing C_1, the Alexander <= j complex. 
 	  for(KnotFloerGen G: KFC.Generators)
@@ -75,7 +75,7 @@ int Tau(const KnotFloerComplex & KFC)
           for(ChainArrow A: KFC.Differential)
             {int a=KFC.Generators[A.StartingGen].Alexander;  
              int b=KFC.Generators[A.EndingGen].Alexander;  
-             if(b<= a and a<= j) C1.Differential.push_back(A); }
+             if(b<= a && a<= j) C1.Differential.push_back(A); }
       	             
           ChainComplex C2=C1; //C_2 will be a mapping cone from C1 to Filtered
           for(int i=0; i< x; i++) C2.Generators.push_back(x+i); //Adding the Filtered Generators
@@ -103,14 +103,14 @@ int Nu(const KnotFloerComplex & KFC){
     int Rank1=0; int Rank2=1; 
     int j=Tau(KFC); int genus=Genus(KFC);
       
-    while(Rank2==Rank1+1 and j<= genus)
+    while(Rank2==Rank1+1 && j<= genus)
       {ChainComplex C1; C1.Prime=KFC.Prime; 
 
        for(int t=0; t<x; t++) C1.Generators.push_back(t);
        for(ChainArrow  A: KFC.Differential)
 	     {int a=KFC.Generators[A.StartingGen].Alexander; 
               int b=KFC.Generators[A.EndingGen].Alexander;
-              if ((b<= a and a <=j) or (b>=a and a>=j ))
+              if ((b<= a && a <=j) || (b>=a && a>=j ))
 	         C1.Differential.push_back(A);}
       
        ChainComplex C2=C1;
@@ -145,7 +145,7 @@ int Epsilon(const KnotFloerComplex & KFC){
     int nu2=NuOfMirror(KFC); 
     int ans=0;
     if(nu==tau+1) ans=-1;
-    else if(nu==tau and nu2== -tau) ans=0;
+    else if(nu==tau && nu2== -tau) ans=0;
     else if(nu2== -tau+1) ans=1;
     return ans;
 }

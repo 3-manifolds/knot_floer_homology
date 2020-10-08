@@ -31,7 +31,7 @@ void Simplify()
 	 bool FoundShortArrow=false;  
 	 for(size_t j=0; j<X.size(); j++)
 	    {Arrow Y=ArrowList[X[j]]; int a=Y.StartingGen; int b=Y.EndingGen;
-             if (Y.Coeff !=0 and Y.MonomialIndex==0 and
+             if (Y.Coeff !=0 && Y.MonomialIndex==0 &&
                  GeneratorList[a].Idem == GeneratorList[b].Idem)
 	       FoundShortArrow=true;
 	    }
@@ -54,8 +54,8 @@ void Simplify()
          for(size_t j=0; j<X.size(); j++) 
 	   {Arrow Arr=ArrowList[X[j]];  int c=Arr.EndingGen;
             if( Arr.Coeff !=0 
-                and GeneratorList[From].Idem == GeneratorList[c].Idem 
-	        and Arr.MonomialIndex==0  and (Maps2[c]).size() <Connectivity) 
+                && GeneratorList[From].Idem == GeneratorList[c].Idem 
+	        && Arr.MonomialIndex==0  && (Maps2[c]).size() <Connectivity) 
 	    {index=j; To=c; Connectivity=(Maps2[c]).size();}
 	   }
          if(index==-1) continue; 
@@ -71,8 +71,8 @@ void Simplify()
          for(int  i1 : P)//creating new arrows from zig-zags
 	   for(int  i2: X) 
                {Arrow A=ArrowList[i1]; Arrow B=ArrowList[i2];
-	        if(A.Coeff==0 or A.StartingGen==From 
-                   or B.Coeff ==0 or B.EndingGen==To) continue;
+	        if(A.Coeff==0 || A.StartingGen==From 
+                   || B.Coeff ==0 || B.EndingGen==To) continue;
 	        int a=A.StartingGen; int b=B.EndingGen;
                 idem I1=GeneratorList[a].Idem; 
                 idem I2=GeneratorList[To].Idem; 
@@ -89,8 +89,8 @@ void Simplify()
                 // Either  Q existed before (with perhaps different 
                 //coefficient) or Q is new. We add or update:
 	        int s=0; int f=Maps1[a].size();
-                while(s<f and (ArrowList[Maps1[a][s]].EndingGen !=b 
-                      or ! Equal(ArrowList[Maps1[a][s]], Q)) ) s++;
+                while(s<f && (ArrowList[Maps1[a][s]].EndingGen !=b 
+                      || ! Equal(ArrowList[Maps1[a][s]], Q)) ) s++;
 	        if(s==f) //Q is new
 	          {ArrowList.push_back(Q); 
 		   (Maps1[a]).push_back(CurrentSize); 
@@ -118,7 +118,7 @@ void Simplify()
          //Before starting a new cycle:  
          //If the size of the ArrowList increased too much a 
          //rearrange the data: 
-         if(CurrentSize > 2*OldSize + 10000 and i<Candidates.size()-1) 
+         if(CurrentSize > 2*OldSize + 10000 && i<Candidates.size()-1) 
          // deleting those with Coeff=0:
 	    {for(int j=0; j< x; j++) {Maps1[j].clear(); Maps2[j].clear();}
 	     int Write=0;

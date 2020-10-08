@@ -59,7 +59,7 @@ void MaxM2Action(Arrow arrow1, int Position)//Bridge is increased before
     else  f1=LeftRight(I1, I2, Position-1);
     f2=LeftRight(I1, I2, Position);
   
-    if(f1==1 and f2==1) // Incoming algebra element's local weight=R2R1, Ex: R_{Position}R_{Position-1}
+    if(f1==1 && f2==1) // Incoming algebra element's local weight=R2R1, Ex: R_{Position}R_{Position-1}
        {idem I3=ExtendY(I1, Position); idem I4=ExtendX(I2,Position);
         Arrow Arr=arrow1; 
         Arr.MonomialIndex=r;
@@ -67,7 +67,7 @@ void MaxM2Action(Arrow arrow1, int Position)//Bridge is increased before
         Arr.Coeff=(arrow1.Coeff * (Modulus-Sign))%Modulus ;
         if(NonZero(I3,I4,r)) NewArrowList.push_back(Arr); }
 
-    if(f1== -1 and f2== -1) //L1L2
+    if(f1== -1 && f2== -1) //L1L2
        {idem I3=ExtendX(I1, Position); 
         idem I4=ExtendY(I2,Position);
         Arrow Arr=arrow1; 
@@ -76,7 +76,7 @@ void MaxM2Action(Arrow arrow1, int Position)//Bridge is increased before
         Arr.Coeff=(arrow1.Coeff * (Modulus+Sign))%Modulus;
         if(NonZero(I3,I4,r)) NewArrowList.push_back(Arr); }
 
-    if(f1==1 and f2==0) //R1
+    if(f1==1 && f2==0) //R1
        {idem I3=ExtendZ(I1, Position); 
         idem I4=ExtendX(I2,Position);
         Arrow Arr=arrow1; 
@@ -85,7 +85,7 @@ void MaxM2Action(Arrow arrow1, int Position)//Bridge is increased before
         Arr.Coeff=(arrow1.Coeff * (Modulus+Sign))%Modulus;
         if(NonZero(I3,I4,r)) NewArrowList.push_back(Arr); }
 
-    if(f1==-1 and f2==0) //L1
+    if(f1==-1 && f2==0) //L1
        {idem I3=ExtendX(I1, Position); 
         idem I4=ExtendZ(I2,Position);
         Arrow Arr=arrow1; 
@@ -94,7 +94,7 @@ void MaxM2Action(Arrow arrow1, int Position)//Bridge is increased before
         Arr.Coeff=(arrow1.Coeff * (Modulus+Sign))%Modulus;
         if(NonZero(I3,I4,r)) NewArrowList.push_back(Arr); }
 
-    if(f1==0 and f2==1) //R2
+    if(f1==0 && f2==1) //R2
        {idem I3=ExtendY(I1, Position); 
         idem I4=ExtendZ(I2,Position);
         Arrow Arr=arrow1; 
@@ -103,7 +103,7 @@ void MaxM2Action(Arrow arrow1, int Position)//Bridge is increased before
         Arr.Coeff=(arrow1.Coeff * (Modulus-Sign))%Modulus;
         if(NonZero(I3,I4,r)) NewArrowList.push_back(Arr); }
 
-    if(f1==0 and f2== -1) //L2
+    if(f1==0 && f2== -1) //L2
        {idem I3=ExtendZ(I1, Position); 
         idem I4=ExtendY(I2,Position);
         Arrow Arr=arrow1; 
@@ -112,7 +112,7 @@ void MaxM2Action(Arrow arrow1, int Position)//Bridge is increased before
         Arr.Coeff=(arrow1.Coeff * (Modulus+Sign))%Modulus;
         if(NonZero(I3,I4,r)) NewArrowList.push_back(Arr); }
 
-    if(f1==0 and f2==0 and Z) // Z to Z
+    if(f1==0 && f2==0 && Z) // Z to Z
        {idem I3=ExtendZ(I1, Position); idem I4=ExtendZ(I2,Position);
         Arrow Arr=arrow1; 
         Arr.MonomialIndex=r;
@@ -120,7 +120,7 @@ void MaxM2Action(Arrow arrow1, int Position)//Bridge is increased before
         Arr.Coeff=(arrow1.Coeff * (Modulus+Sign))%Modulus;
         if(NonZero(I3,I4,r)) NewArrowList.push_back(Arr); }
 
-    if(f1==0 and f2==0 and XY) // X to X
+    if(f1==0 && f2==0 && XY) // X to X
        {idem I3=ExtendX(I1, Position); idem I4=ExtendX(I2,Position);
         Arrow Arr=arrow1; 
         Arr.MonomialIndex=r;
@@ -128,7 +128,7 @@ void MaxM2Action(Arrow arrow1, int Position)//Bridge is increased before
         Arr.Coeff=(arrow1.Coeff * (Modulus+Sign))%Modulus;
         if(NonZero(I3,I4,r)) NewArrowList.push_back(Arr); }
 
-    if(f1==0 and f2==0 and XY) // Y to Y
+    if(f1==0 && f2==0 && XY) // Y to Y
        {idem I3=ExtendY(I1, Position); idem I4=ExtendY(I2,Position);
         Arrow Arr=arrow1; 
         Arr.MonomialIndex=r;

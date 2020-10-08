@@ -16,12 +16,12 @@ struct Term{idem Idem; int Alexander; int Coeff;
 void Update(vector<Term> & Old)
 {   if(Old.size()==0) return;
     sort(Old.begin(), Old.end(), [](Term a, Term b) 
-      {return (a.Idem<b.Idem or (a.Idem==b.Idem and a.Alexander<b.Alexander));
+      {return (a.Idem<b.Idem || (a.Idem==b.Idem && a.Alexander<b.Alexander));
       } ); //sorting by idempotent and Alexander grading.
 
     Term a=Old[0]; a.Coeff=0; int Write=0;
     for(Term b: Old)
-       if(a.Idem==b.Idem and a.Alexander==b.Alexander) a.Coeff+=b.Coeff;
+       if(a.Idem==b.Idem && a.Alexander==b.Alexander) a.Coeff+=b.Coeff;
        else if(a.Coeff==0) a=b;
        else {Old[Write]=a; Write++; a=b;}
     if(a.Coeff!=0)
@@ -35,15 +35,15 @@ void Update(vector<Term> & Old)
 bool ExtendableA(idem x, int n, int Cor) 
 {   if(Cor==0)  return  (x & (1<< n));
     if(Cor==3)  return !(x & (1<< n));
-    if(Cor==2)  return ( !(x & (1<< n)) and (x & (1<<(n-1))) );
-    if(Cor==1)  return ( !(x & (1<< n)) and (x & (1<<(n+1))) );
+    if(Cor==2)  return ( !(x & (1<< n)) && (x & (1<<(n-1))) );
+    if(Cor==1)  return ( !(x & (1<< n)) && (x & (1<<(n+1))) );
     return -1;
 }
 
 idem ExtendA(idem x, int n, int Cor)
 {   if(Cor==1)  return x-(1<<n);
     if(Cor==2)  return x+(1<<(n-1)); 
-    if(Cor==0 or Cor==3)  return x;
+    if(Cor==0 || Cor==3)  return x;
     return -1;
 }
 
@@ -57,10 +57,10 @@ vector<Term> AfterCrossingAlt(vector<Term> Old, int Crossing)
          {if( !ExtendableA(G.Idem, n, Cor)) continue; 
           G.Idem=ExtendA(G.Idem, n, Cor);
           int A=G.Alexander; int M=G.Coeff;
-          if((Sign1==1 and Sign2==1 and Cor==0) or (Sign1==0 and Sign2==0 and Cor==3)) {A=A-PM; M=-M;}
-          if((Sign1==1 and Sign2==0 and Cor==2)  or (Sign1==0 and Sign2==1 and Cor==1 )) {A=A+PM; M=-M;}
-          if((Sign1==1 and Sign2==0 and Cor==1)  or (Sign1==0 and Sign2==1 and Cor==2 )) {A=A-PM;}                               
-          if((Sign1==1 and Sign2==1 and Cor==3) or (Sign1==0 and Sign2==0 and Cor==0)) {A=A+PM;}                    
+          if((Sign1==1 && Sign2==1 && Cor==0) || (Sign1==0 && Sign2==0 && Cor==3)) {A=A-PM; M=-M;}
+          if((Sign1==1 && Sign2==0 && Cor==2)  || (Sign1==0 && Sign2==1 && Cor==1 )) {A=A+PM; M=-M;}
+          if((Sign1==1 && Sign2==0 && Cor==1)  || (Sign1==0 && Sign2==1 && Cor==2 )) {A=A-PM;}                               
+          if((Sign1==1 && Sign2==1 && Cor==3) || (Sign1==0 && Sign2==0 && Cor==0)) {A=A+PM;}                    
           G.Alexander=A; G.Coeff=M;  
           New.push_back(G);
 	 }
@@ -162,7 +162,7 @@ void KnotFloerForAlternatingKnots(PlanarDiagram Diag, ostream & os)
          else if (Morse[i]==-1000)                                          
              Current=AfterMinAlt(Current);  
 		
-         else if  (Morse[i]< 2*Bridge and Morse[i] >-(2*Bridge) and Morse[i] != 0) 
+         else if  (Morse[i]< 2*Bridge && Morse[i] >-(2*Bridge) && Morse[i] != 0) 
 	     Current=AfterCrossingAlt(Current, Morse[i]);   
 	}
 
@@ -186,7 +186,7 @@ void KnotFloerForAlternatingKnots(PlanarDiagram Diag, ostream & os)
     int MaxAlex= -(*Range.begin()).first;
     int LeadingCoeff= (*Range.begin()).second;
     os<<"Seifert genus : "<<MaxAlex/2<<endl;
-    if(LeadingCoeff==1 or LeadingCoeff==-1) os<<"Fibered : Yes\n";
+    if(LeadingCoeff==1 || LeadingCoeff==-1) os<<"Fibered : Yes\n";
     else os<<"Fibered : No\n";       
     if(LSpaceKnot) os<<"L-space knot : Yes\n";
     else os<<"L-space knot : No\n";

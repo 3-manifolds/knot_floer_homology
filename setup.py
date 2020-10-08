@@ -7,8 +7,8 @@ version = re.search("__version__ = '(.*)'",
                     open('python_src/__init__.py').read()).group(1)
 
 cpp_dir = 'ComputeHFKv2'
-cpp_sources = glob.glob(cpp_dir + '/*.cpp')
-cpp_sources.remove(cpp_dir + '/Main.cpp')
+cpp_sources = glob.glob(cpp_dir + os.sep + '*.cpp')
+cpp_sources.remove(cpp_dir + os.sep + 'Main.cpp')
 
 hfk = Extension(
     name = 'zs_hfk/hfk',

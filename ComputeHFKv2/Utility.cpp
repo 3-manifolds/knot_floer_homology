@@ -38,8 +38,8 @@ int MonomialLookUp(const monomial& X)
 bool TooFar(idem I1, idem I2) 
 {   int a=0; int i=2*Bridge; 
     while(i--)
-      {if(a>0 and ((I2 &1)==0)) return true;
-       if(a<0 and ((I1 &1)==0)) return true;
+      {if(a>0 && ((I2 &1)==0)) return true;
+       if(a<0 && ((I1 &1)==0)) return true;
 	    a=a+(I1 &1)-(I2& 1);I1=I1>>1; I2=I2>>1;}                    
     return false;   
 }
@@ -57,9 +57,9 @@ bool NonZero(idem I1, idem I2, int m)
       {I1=I1>>1; I2=I2>>1; d=P[j]; j++;
        b=(I1 & 1); //b=true if I1 has a coordinate between walls j and j+1
        c=(I2 & 1);  
-       if(r and (!b  or !c) and d) return false; //found the intervall
-       else if((crossed  and (b!=c)) or (!crossed  and !b and !c)) r=true; 
-       else if(r and !crossed and b and c and d) r=true; //grow the intervall 
+       if(r && (!b  || !c) && d) return false; //found the intervall
+       else if((crossed  && (b!=c)) || (!crossed  && !b && !c)) r=true; 
+       else if(r && !crossed && b && c && d) r=true; //grow the intervall 
        else r=false; //we look for a new intervall to be checked
        crossed= crossed ^ b ^ c;} 
     return true;
@@ -75,7 +75,7 @@ int Mult(idem I1, idem I2, idem I3, int m1, int m2){
       {if(I1 & 1) a1++;
        if(I2 & 1) a2++;
        if(I3 & 1) a3++;
-       if((a1>a2 and a2<a3) or (a1<a2 and a2>a3)) 
+       if((a1>a2 && a2<a3) || (a1<a2 && a2>a3)) 
              X[j]=X1[j]+X2[j]+1;
        else  X[j]=X1[j]+X2[j];
        j++; I1=I1>>1; I2=I2>>1; I3=I3>>1;}
@@ -85,15 +85,15 @@ int Mult(idem I1, idem I2, idem I3, int m1, int m2){
 
 bool Strict(const Arrow & A, const Arrow & B)
 {   return(   (A.StartingGen < B.StartingGen) 
-           or (A.StartingGen ==B.StartingGen and  A.EndingGen < B.EndingGen) 
-           or (A.StartingGen ==B.StartingGen  and  A.EndingGen == B.EndingGen 
-	       and A.MonomialIndex < B.MonomialIndex) ); 
+           || (A.StartingGen ==B.StartingGen &&  A.EndingGen < B.EndingGen) 
+           || (A.StartingGen ==B.StartingGen  &&  A.EndingGen == B.EndingGen 
+	       && A.MonomialIndex < B.MonomialIndex) ); 
 } 
 
 //Coeff could be different
 bool Equal(const Arrow & A, const Arrow & B)
-{   return ((A.StartingGen   == B.StartingGen)  and  
-            (A.EndingGen     == B.EndingGen) and 
+{   return ((A.StartingGen   == B.StartingGen)  &&  
+            (A.EndingGen     == B.EndingGen) && 
 	    (A.MonomialIndex == B.MonomialIndex) );
 }
 

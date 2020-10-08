@@ -20,13 +20,13 @@ enum{North, East, West, South};
 inline  bool Extendable(idem x, int n, int Cor) 
 {   if(Cor==North) return  (x & (1<< n));
     if(Cor==South) return !(x & (1<< n));
-    if(Cor==West)  return ( !(x & (1<< n)) and (x & (1<<(n-1))) );
-    if(Cor==East)  return ( !(x & (1<< n)) and (x & (1<<(n+1))) );
+    if(Cor==West)  return ( !(x & (1<< n)) && (x & (1<<(n-1))) );
+    if(Cor==East)  return ( !(x & (1<< n)) && (x & (1<<(n+1))) );
     return -1; /* Avoid compiler warning */
 }
 
 inline  idem Extend(idem x, int n, int Cor)
-{   if(Cor==North or Cor==South) return x;
+{   if(Cor==North || Cor==South) return x;
     if(Cor==East) return x-(1<<n);
     if(Cor==West) return x+(1<<(n-1));
     return -1; /* Avoid compiler warning */
@@ -94,9 +94,9 @@ void M1Actions(int Crossing, int k1, int k2)//k1 matches with n, k2  with n+1
 {   int n=abs(Crossing); bool Pos=(Crossing >0); bool Neg (Crossing <0);
     for (Gen G: GeneratorList)
       {if(Pos) {PosM1(G,n,East); PosM1(G,n,West);}
-       if(Pos and k1 !=n+1) {CurvedPosM1(G,n,k1,East); CurvedPosM1(G,n,k2,West);}
+       if(Pos && k1 !=n+1) {CurvedPosM1(G,n,k1,East); CurvedPosM1(G,n,k2,West);}
        if(Neg) {NegM1(G,n,East); NegM1(G,n,West);}
-       if(Neg and k1 !=n+1) {CurvedNegM1(G,n,k1,East); CurvedNegM1(G,n,k2,West);}
+       if(Neg && k1 !=n+1) {CurvedNegM1(G,n,k1,East); CurvedNegM1(G,n,k2,West);}
       }
 }
 
@@ -108,7 +108,7 @@ void M1Actions(int Crossing, int k1, int k2)//k1 matches with n, k2  with n+1
 void M2S(Arrow arrow1, int n)//Local weights are (U_n\cdot U_{n+1})^t 
 {   idem I1=GeneratorList[arrow1.StartingGen].Idem; 
     idem I2=GeneratorList[arrow1.EndingGen].Idem; 
-    if(Extendable(I1, n, South) and Extendable(I2, n, South))
+    if(Extendable(I1, n, South) && Extendable(I2, n, South))
        {monomial X=MonomialStore[arrow1.MonomialIndex]; 
         if (X[n]==X[n-1]) 
 	   {arrow1.StartingGen=4*(arrow1.StartingGen)+South; 
@@ -128,22 +128,22 @@ int LookBack(int f1, int f2, int U1, int U2, int X)
 {   switch(X) {
     case 0: { 
       if  (            f1==f2            ) return 0;
-      if  (f1==1  and  f2==0   and U1< U2) return 1;
-      if  (f1==1  and  f2==0   and U1>=U2) return 2;
-      if  (f1==0  and  f2==-1  and U1<=U2) return 1;
-      if  (f1==0  and  f2==-1  and U1> U2) return 2;}
+      if  (f1==1  &&  f2==0   && U1< U2) return 1;
+      if  (f1==1  &&  f2==0   && U1>=U2) return 2;
+      if  (f1==0  &&  f2==-1  && U1<=U2) return 1;
+      if  (f1==0  &&  f2==-1  && U1> U2) return 2;}
  
     case 1: {   
-      if  (f1==0  and  f2==0   and U1<=U2) return 1;
-      if  (f1==0  and  f2==0   and U1> U2) return 2;
-      if  (f1==-1 and  f2==0             ) return 0;
-      if  (f1==0  and  f2==1             ) return 0;}
+      if  (f1==0  &&  f2==0   && U1<=U2) return 1;
+      if  (f1==0  &&  f2==0   && U1> U2) return 2;
+      if  (f1==-1 &&  f2==0             ) return 0;
+      if  (f1==0  &&  f2==1             ) return 0;}
   
     case 2: {
-      if  (f1==0  and  f2==0   and U1>=U2) return 2;
-      if  (f1==0  and  f2==0   and U1< U2) return 1;
-      if  (f1==-1 and  f2==0             ) return 0;
-      if  (f1==0  and  f2==1             ) return 0;}}
+      if  (f1==0  &&  f2==0   && U1>=U2) return 2;
+      if  (f1==0  &&  f2==0   && U1< U2) return 1;
+      if  (f1==-1 &&  f2==0             ) return 0;
+      if  (f1==0  &&  f2==1             ) return 0;}}
   
     return -1;
 }
@@ -179,22 +179,22 @@ int LookForward(int f1, int f2, int U1, int U2, int X)
 {   switch(X){
     case 0: {
       if  (            f1==f2            )   return 0;
-      if  (f1==-1 and  f2==0   and U1< U2)   return 1;
-      if  (f1==-1 and  f2==0   and U1>=U2)   return 2;
-      if  (f1==0  and  f2==1   and U1<=U2)   return 1;
-      if  (f1==0  and  f2==1   and U1> U2)   return 2;}
+      if  (f1==-1 &&  f2==0   && U1< U2)   return 1;
+      if  (f1==-1 &&  f2==0   && U1>=U2)   return 2;
+      if  (f1==0  &&  f2==1   && U1<=U2)   return 1;
+      if  (f1==0  &&  f2==1   && U1> U2)   return 2;}
     
     case 1: {
-      if  (f1==0  and   f2==0  and U1<=U2)   return 1;
-      if  (f1==0  and   f2==0  and U1 >U2)   return 2;
-      if  (f1==1  and   f2==0            )   return 0;
-      if  (f1==0  and   f2==-1           )   return 0;}
+      if  (f1==0  &&   f2==0  && U1<=U2)   return 1;
+      if  (f1==0  &&   f2==0  && U1 >U2)   return 2;
+      if  (f1==1  &&   f2==0            )   return 0;
+      if  (f1==0  &&   f2==-1           )   return 0;}
   
     case 2: {
-      if  (f1==0  and   f2==0  and U1>=U2)   return 2;
-      if  (f1==0  and   f2==0  and U1< U2)   return 1;
-      if  (f1==1  and   f2==0            )   return 0;
-      if  (f1==0  and   f2==-1           )   return 0;}}
+      if  (f1==0  &&   f2==0  && U1>=U2)   return 2;
+      if  (f1==0  &&   f2==0  && U1< U2)   return 1;
+      if  (f1==1  &&   f2==0            )   return 0;
+      if  (f1==0  &&   f2==-1           )   return 0;}}
   
     return -1;
 }
@@ -255,12 +255,12 @@ void  PosM3(Arrow arrow1, Arrow arrow2, int n) //StartCor=South
         idem I4=Extend(I3, n, EndCor);
         if(TooFar(I1, I4))  continue; 
 	int x1=LookBack(g1,g2,V1,V2,EndCor);   if(x1==-1) continue;
-        int x2=LookBack(f1,f2,U1,U2,x1);       if(x2==-1 or x2==0) continue;
+        int x2=LookBack(f1,f2,U1,U2,x1);       if(x2==-1 || x2==0) continue;
         int x3=LookBack(g1+f1, g2+f2, U1+V1+(abs(g1)+abs(f1))/2, U2+V2+(abs(g2)+abs(f2))/2,EndCor); 
-        if(x3==0 or x2==x3) continue;
-        if(x3==-1 and EndCor==North) continue;
-        if(x3==-1 and EndCor==East and !(f1==1 and U1==0 and f2==0 and U2==0 and g1==0 and V1==0 and g2==1)) continue;
-        if(x3==-1 and EndCor==West and !(f1==0 and U1==0 and f2==-1 and U2==0 and g1==-1 and g2==0 and V2==0)) continue;  
+        if(x3==0 || x2==x3) continue;
+        if(x3==-1 && EndCor==North) continue;
+        if(x3==-1 && EndCor==East && !(f1==1 && U1==0 && f2==0 && U2==0 && g1==0 && V1==0 && g2==1)) continue;
+        if(x3==-1 && EndCor==West && !(f1==0 && U1==0 && f2==-1 && U2==0 && g1==-1 && g2==0 && V2==0)) continue;  
         monomial X=MonomialOne;
         Arrow ans;
         ans.StartingGen=4*arrow1.StartingGen+South;
@@ -270,7 +270,7 @@ void  PosM3(Arrow arrow1, Arrow arrow2, int n) //StartCor=South
 	   {if(I1 &(1<<i)) p1++;
 	    if(I2 &(1<<i)) p2++;
             if(I3 &(1<<i)) p3++;
-            if((p1>p2 and p2<p3) or (p1<p2 and p2>p3))
+            if((p1>p2 && p2<p3) || (p1<p2 && p2>p3))
  	       X[i]=m1[i]+m2[i]+1;
 	    else X[i]=m1[i]+m2[i];}
 
@@ -309,12 +309,12 @@ void  NegM3(Arrow arrow1, Arrow arrow2, int n)//EndCor=South
           idem I0=Extend(I1, n, StartCor);
           if( TooFar(I0, I3)) continue; 
           int x1=LookForward(f1,f2,U1,U2,StartCor);             if(x1==-1) continue;
-          int x2=LookForward(g1,g2,V1,V2,x1);                   if(x2==-1 or x2==0) continue;
+          int x2=LookForward(g1,g2,V1,V2,x1);                   if(x2==-1 || x2==0) continue;
           int x3=LookForward(f1+g1, f2+g2, U1+V1+(abs(f1)+abs(g1))/2, U2+V2+(abs(f2)+abs(g2))/2,StartCor); 
-          if((x3==0) or (x2==x3)) continue;
-          if(x3==-1 and StartCor==North) continue;
-          if(x3==-1 and StartCor==East and !(f1==0 and U1==0 and f2==-1 and g1==-1 and V1==0 and g2==0 and V2==0)) continue;
-          if(x3==-1 and StartCor==West and !(f1==1 and U2==0 and f2==0  and g1==0  and V1==0 and g2==1 and V2==0)) continue;  
+          if((x3==0) || (x2==x3)) continue;
+          if(x3==-1 && StartCor==North) continue;
+          if(x3==-1 && StartCor==East && !(f1==0 && U1==0 && f2==-1 && g1==-1 && V1==0 && g2==0 && V2==0)) continue;
+          if(x3==-1 && StartCor==West && !(f1==1 && U2==0 && f2==0  && g1==0  && V1==0 && g2==1 && V2==0)) continue;  
           monomial X=MonomialOne;
           Arrow ans;
           ans.StartingGen=4*arrow1.StartingGen+StartCor;
@@ -325,7 +325,7 @@ void  NegM3(Arrow arrow1, Arrow arrow2, int n)//EndCor=South
 	    {if(I1 &(1<<i)) p1++;
 	     if(I2 &(1<<i)) p2++;
              if(I3 &(1<<i)) p3++;
-             if((p1>p2 and p2<p3) or (p1<p2 and p2>p3))
+             if((p1>p2 && p2<p3) || (p1<p2 && p2>p3))
  	       X[i]=m1[i]+m2[i]+1;
 	     else X[i]=m1[i]+m2[i];}
 	  int H1=2*U1+ 2*V1+ abs(f1)+ abs(g1)-1;
@@ -384,10 +384,10 @@ void AfterCrossing(int Crossing)
 	  if( !Extendable(G.Idem, n, Cor) ) continue; 
 	  G.Idem=Extend(G.Idem, n, Cor);
           int A=G.Alexander; int M=G.Maslov;
-          if((Sign1==1 and Sign2==1 and Cor==North) or (Sign1==0 and Sign2==0 and Cor==South)) {A=A-PM; M=M-PM;}
-          if((Sign1==1 and Sign2==0 and Cor==West)  or (Sign1==0 and Sign2==1 and Cor==East )) {A=A+PM; M=M+PM;}
-          if((Sign1==1 and Sign2==0 and Cor==East)  or (Sign1==0 and Sign2==1 and Cor==West )) {A=A-PM;}                    
-          if((Sign1==1 and Sign2==1 and Cor==South) or (Sign1==0 and Sign2==0 and Cor==North)) {A=A+PM;}                    
+          if((Sign1==1 && Sign2==1 && Cor==North) || (Sign1==0 && Sign2==0 && Cor==South)) {A=A-PM; M=M-PM;}
+          if((Sign1==1 && Sign2==0 && Cor==West)  || (Sign1==0 && Sign2==1 && Cor==East )) {A=A+PM; M=M+PM;}
+          if((Sign1==1 && Sign2==0 && Cor==East)  || (Sign1==0 && Sign2==1 && Cor==West )) {A=A-PM;}                    
+          if((Sign1==1 && Sign2==1 && Cor==South) || (Sign1==0 && Sign2==0 && Cor==North)) {A=A+PM;}                    
           G.Alexander=A; G.Maslov=M; G.Name=4*G.Name+Cor;  
           NewGeneratorList.push_back(G);
 	}
