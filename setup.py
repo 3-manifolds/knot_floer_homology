@@ -13,8 +13,6 @@ cpp_sources.remove(cpp_dir + '/Main.cpp')
 hfk = Extension(
     name = 'zs_hfk/hfk',
     sources = ['cython_src/hfk.cpp'] + cpp_sources,
-    include_dirs = [cpp_sources],
-    extra_link_args = [],
     extra_compile_args = ['-O3', '-std=c++11'],
 )
 
@@ -30,7 +28,7 @@ class HFKClean(Command):
     def run(self):
         for dir in ['build', 'dist', 'lib']:
             shutil.rmtree(dir, ignore_errors=True)
-        for file in glob.glob('*.pyc') + glob.glob('cython_src/*.c'):
+        for file in glob.glob('*.pyc') + glob.glob('cython_src/*.cpp'):
             if os.path.exists(file):
                 os.remove(file)
 
