@@ -2,5 +2,5 @@ python_src/zs_hfk_binary
 build
 dist
 lib
-cython_src/*.c
+cython_src/*.c*
 

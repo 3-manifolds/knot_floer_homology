@@ -203,6 +203,8 @@ PDCodeToMorseAndHFK(
   if (error == NULL) {
     throw runtime_error("PDCodeToMorseAndHFK: error must not be null.");
   }
+  MonomialStore.push_back(MonomialOne);
+  MonomialMap.insert(make_pair(MonomialOne, 0) );
   readPDCode(pd, PDString);
   PlanarDiagram Diag = PlanarDiagram(PDString);
   if (!isPrime(prime)) {
