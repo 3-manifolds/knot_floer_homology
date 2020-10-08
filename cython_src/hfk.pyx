@@ -1,3 +1,5 @@
+# distutils: language = c++
+
 from libc.stdlib cimport free
 cdef extern void PDCodeToMorseAndHFK(char *pd, int prime, char** morse,
                                      char **hfk, char **error)
