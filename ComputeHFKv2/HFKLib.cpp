@@ -239,20 +239,20 @@ void PDCodeToMorseAndHFK(
       } else {
 	MorseCodeAsEvents(M, Morse);
 	if (hfk) {
-	    KnotFloerComplex KFC=ComputingKnotFloer(M, prime);
-	    HFK << "{" << endl;
-	    ITEM(HFK, "modulus", prime);
-	    HFK << "  \"ranks\": ";
-	    KnotFloerRanksAsDict(KFC, HFK);
-	    HFK << "," << endl;
-	    ITEM(HFK, "total_rank", KFC.Generators.size());
-	    ITEM(HFK, "seifert_genus", Genus(KFC));
-	    ITEM(HFK, "fibered", (Fibered(KFC) ? "True" : "False"));
-	    ITEM(HFK, "L_space_knot", (LSpaceKnot(KFC) ? "True" : "False"));
-	    ITEM(HFK, "tau", Tau(KFC));
-	    ITEM(HFK, "nu", Nu(KFC));
-	    ITEM(HFK, "epsilon", Epsilon(KFC));
-	    HFK << "}" << endl;
+	  KnotFloerComplex KFC=ComputingKnotFloer(M, prime, false);
+	  HFK << "{" << endl;
+	  ITEM(HFK, "modulus", prime);
+	  HFK << "  \"ranks\": ";
+	  KnotFloerRanksAsDict(KFC, HFK);
+	  HFK << "," << endl;
+	  ITEM(HFK, "total_rank", KFC.Generators.size());
+	  ITEM(HFK, "seifert_genus", Genus(KFC));
+	  ITEM(HFK, "fibered", (Fibered(KFC) ? "True" : "False"));
+	  ITEM(HFK, "L_space_knot", (LSpaceKnot(KFC) ? "True" : "False"));
+	  ITEM(HFK, "tau", Tau(KFC));
+	  ITEM(HFK, "nu", Nu(KFC));
+	  ITEM(HFK, "epsilon", Epsilon(KFC));
+	  HFK << "}" << endl;
 	}
       }
     }

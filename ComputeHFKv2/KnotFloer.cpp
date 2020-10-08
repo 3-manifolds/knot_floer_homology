@@ -9,7 +9,7 @@
 
 using namespace std;
 
-KnotFloerComplex  ComputingKnotFloer(MorseCode Morse, int Prime){    
+KnotFloerComplex  ComputingKnotFloer(MorseCode Morse, int Prime, bool verbose){    
     MatchingList.clear(); UpwardList.clear(); 
     GeneratorList.clear(); NewGeneratorList.clear(); 
     ArrowList.clear(); NewArrowList.clear();
@@ -22,26 +22,30 @@ KnotFloerComplex  ComputingKnotFloer(MorseCode Morse, int Prime){
     Modulus=Prime; //finished creating the starting D-module
     vector<int> MorseList = Morse.GetMorseList(); 
     
-    cout<<"Computation is with mod "<<Modulus<<" coefficients"<<endl;
     //orientation of the first maximum:
     if(MorseList[0]==1000) {UpwardList.push_back(1); UpwardList.push_back(0);} 
     if(MorseList[0]==1001) {UpwardList.push_back(0); UpwardList.push_back(1);}
      
     int Steps=MorseList.size();
-    cout<<"Steps to do:"<<endl;
-    for(int i=2, B=1; i< Steps -1 ; i++)
-	 {if(MorseList[i]>999) {cout<<(++B);i++;}
+    if (verbose) {
+      cout<<"Computation is with mod "<<Modulus<<" coefficients"<<endl;
+      cout<<"Steps to do:"<<endl;
+      for(int i=2, B=1; i< Steps -1 ; i++)
+	{if(MorseList[i]>999) {cout<<(++B);i++;}
 	  else if(MorseList[i]<-999) cout<<(--B);
           else cout<<".";
 	  cout.flush();}
-    cout<<endl;
-    cout<<"Steps in progress:"<<endl; 
-     
+      cout<<endl;
+      cout<<"Steps in progress:"<<endl; 
+    }
     for(int i=2; i< Steps -1 ; i++)
-	{if(MorseList[i]>999) {cout<<Bridge+1;}
-	 else if(MorseList[i]<-999) cout<<Bridge-1;
-         else cout<<".";
-         cout.flush(); 
+	{
+	  if (verbose) {
+	    if(MorseList[i]>999) {cout<<Bridge+1;}
+	    else if(MorseList[i]<-999) cout<<Bridge-1;
+	    else cout<<".";
+	    cout.flush();
+	  }
 
          if (MorseList[i]==1000) AfterMax(MorseList[++i], 0); 
 	 else if (MorseList[i]==1001) AfterMax(MorseList[++i], 1);
@@ -50,7 +54,9 @@ KnotFloerComplex  ComputingKnotFloer(MorseCode Morse, int Prime){
          
          Simplify(); 
 	}
-    cout<<endl;//(GeneratorList,ArrowList) represents a D-Module over B(2,1);
+    if (verbose) {
+      cout<<endl;//(GeneratorList,ArrowList) represents a D-Module over B(2,1);
+    }
     ReName(); 
     KnotFloerComplex KFC; 
     KFC.Prime=Prime;

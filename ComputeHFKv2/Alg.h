@@ -26,7 +26,7 @@ struct KnotFloerComplex
 }; 
 
   //Computes U\cdot V=0 version from a MorseList over F_{Prime}
-KnotFloerComplex ComputingKnotFloer(MorseCode, int Prime);
+KnotFloerComplex ComputingKnotFloer(MorseCode, int Prime, bool verbose=true);
   
 int Genus(const KnotFloerComplex &);
 
