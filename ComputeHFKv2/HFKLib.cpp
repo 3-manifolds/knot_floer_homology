@@ -176,10 +176,10 @@ static void KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag, ostream& os) 
   os << "  }," << endl;
   int MaxAlex = -(*Range.begin()).first;
   int LeadingCoeff = (*Range.begin()).second;
-  ITEM(os, "total rank", TotalRank);
-  ITEM(os, "Seifert genus", MaxAlex/2);
+  ITEM(os, "total_rank", TotalRank);
+  ITEM(os, "seifert_genus", MaxAlex/2);
   ITEM(os, "fibered", (LeadingCoeff == 1 || LeadingCoeff == -1) ? "True" : "False"); 
-  ITEM(os, "L-space knot", LSpaceKnot ? "True" : "False");
+  ITEM(os, "L_space_knot", LSpaceKnot ? "True" : "False");
   ITEM(os, "tau", delta);
   ITEM(os, "nu", delta);
   ITEM(os, "epsilon", (delta > 0) - (delta < 0)); 
@@ -244,10 +244,10 @@ PDCodeToMorseAndHFK(
 	    HFK << "  \"ranks\": ";
 	    KnotFloerRanksAsDict(KFC, HFK);
 	    HFK << "," << endl;
-	    ITEM(HFK, "total rank", KFC.Generators.size());
-	    ITEM(HFK, "Seifert genus", Genus(KFC));
+	    ITEM(HFK, "total_rank", KFC.Generators.size());
+	    ITEM(HFK, "seifert_genus", Genus(KFC));
 	    ITEM(HFK, "fibered", (Fibered(KFC) ? "True" : "False"));
-	    ITEM(HFK, "L-space knot", (LSpaceKnot(KFC) ? "True" : "False"));
+	    ITEM(HFK, "L_space_knot", (LSpaceKnot(KFC) ? "True" : "False"));
 	    ITEM(HFK, "tau", Tau(KFC));
 	    ITEM(HFK, "nu", Nu(KFC));
 	    ITEM(HFK, "epsilon", Epsilon(KFC));

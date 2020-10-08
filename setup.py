@@ -11,8 +11,8 @@ cpp_sources = glob.glob(cpp_dir + '/*.cpp')
 cpp_sources.remove(cpp_dir + '/Main.cpp')
 
 hfk = Extension(
-    name = 'zs_hfk/_hfk',
-    sources = ['cython_src/_hfk.c'] + cpp_sources,
+    name = 'zs_hfk/hfk',
+    sources = ['cython_src/hfk.c'] + cpp_sources,
     include_dirs = [cpp_sources],
     extra_link_args = ['-Llib'],
     extra_compile_args = ['-O3'],
@@ -35,7 +35,7 @@ class HFKClean(Command):
                 os.remove(file)
 
 if 'clean' not in sys.argv:
-    file = 'cython_src/_hfk.pyx'
+    file = 'cython_src/hfk.pyx'
     if os.path.exists(file):
         cythonize([file])
 
@@ -47,7 +47,6 @@ setup(
     url='https://github/NathanDunfield/ZS_HFK',
     packages=['zs_hfk'],
     package_dir={'zs_hfk':'python_src'},
-    package_data={'zs_hfk':['zs_hfk_binary']},
     ext_modules = [hfk],
     cmdclass = {
         'clean':HFKClean,

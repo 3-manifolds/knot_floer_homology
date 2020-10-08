@@ -1,7 +1,7 @@
 __version__ = '0.2'
 
 from . import core
-from . import _hfk
+from . import hfk
 HFK = core.HFK
-pd_to_morse = _hfk.pd_to_morse
-pd_to_hfk = _hfk.pd_to_hfk
+pd_to_morse = hfk.pd_to_morse
+pd_to_hfk = hfk.pd_to_hfk
