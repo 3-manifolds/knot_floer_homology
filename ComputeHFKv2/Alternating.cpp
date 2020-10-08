@@ -175,14 +175,12 @@ void KnotFloerForAlternatingKnots(PlanarDiagram Diag, ostream & os)
     bool LSpaceKnot=true;
     os<<"Ranks in Alexander, Maslov bigradings :"<<endl;
     
-    int v= (*Range.begin()).first-1;
     for(auto X: Range) 
 	{int a=X.first; int b=X.second; 
          if(b<0) b=-b; 
  	 os<<b<<"   ("<<a/2<<","<<a/2-delta<<")"<<endl; 
          TotalRank+=b;    
          if(b !=1) LSpaceKnot=false;
-         v=a;
         }
     os<<"Total rank : "<<TotalRank<<endl;
     int MaxAlex= -(*Range.begin()).first;

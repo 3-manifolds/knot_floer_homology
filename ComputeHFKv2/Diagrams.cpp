@@ -96,12 +96,12 @@ PlanarDiagram::PlanarDiagram(string S){
 MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) {
   vector<int> PD=ListOfTuples;
   int x=PD.size()/4;
-  int SmallestGirth=10000; 
+  size_t SmallestGirth=10000; 
   long long Complexity=1000000000;
   vector<int> MorseList;
   int R=min(100+ x*x, MaxNumberOfTries); //randomly looking for a reasonable MorseList presentation 
     for(int T=0; T< R; T++)
-        {int B=4; //computes the maximal intersection number with y=t in this cycle
+        {size_t B=4; //computes the maximal intersection number with y=t in this cycle
          int FirstC=rand()% x;  //the first crossing used the Morse presentation
          vector<int> TempMorseList(5);
          long long TempComplexity=0;

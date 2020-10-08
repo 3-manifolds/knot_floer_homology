@@ -19,10 +19,10 @@ vector<Arrow> Join(vector<Arrow> &  X, vector<Arrow> & Y)
 {   vector<Arrow> Z; 
     sort(X.begin(),X.end(), [](Arrow a, Arrow b){return a.EndingGen < b.EndingGen;} ); 
     sort(Y.begin(),Y.end(), [](Arrow a, Arrow b){return a.StartingGen < b.StartingGen;} );
-    size_t y1=0; size_t y2=0; size_t x1=0; size_t x2=0;
+    size_t y1=0, y2=0, x1=0, x2=0;
     for(size_t Middle=0; Middle<GeneratorList.size(); Middle++)
-       {while(x2<X.size() and X[x2].EndingGen==Middle) x2++;
-	while(y2<Y.size() and Y[y2].StartingGen==Middle) y2++;
+      {while(x2<X.size() and (size_t)X[x2].EndingGen==Middle) x2++;
+	while(y2<Y.size() and (size_t)Y[y2].StartingGen==Middle) y2++;
         for(size_t i=x1; i<x2; i++)
           for(size_t j=y1; j<y2; j++)
 		    {Arrow C; Arrow A=X[i]; Arrow B=Y[j];
@@ -43,7 +43,7 @@ vector<Arrow> Join(vector<Arrow> &  X, vector<Arrow> & Y)
 }
 
 void AfterMin()
-{   int aa= MatchingList[0]; int bb= MatchingList[1];
+{   size_t aa= MatchingList[0], bb= MatchingList[1];
     vector<Arrow> MoveU1;
     vector<Arrow> MoveU2;
     vector<Arrow> MoveL2;
@@ -54,8 +54,8 @@ void AfterMin()
     NewArrowList.clear();
     for(Arrow A: ArrowList)
       {monomial M=MonomialStore[A.MonomialIndex];
-       int a1=M[0];  int b1=M[1]; 
-       int x1=GeneratorList[A.StartingGen].Idem; int x2=GeneratorList[A.EndingGen].Idem; 
+       int a1=M[0], b1=M[1]; 
+       int x1=GeneratorList[A.StartingGen].Idem, x2=GeneratorList[A.EndingGen].Idem; 
        if (x1 %8 ==4 and x2 %4==2)                      MoveL2.push_back(A); //local weight: L2\times U2^b1, b1 >= 0
        if (x1 %4 ==2 and x2 %8==4)                      MoveR2.push_back(A); //local weight: R2\times U2^b1  b1 >= 0
        if (x1 %4 ==2 and x2 %4==2 and a1>0  and  b1==0) MoveU1.push_back(A); //local weight: U1^a1           a1 >  0
@@ -124,7 +124,7 @@ void AfterMin()
     vector<int> temp;  //Additional update     
     for(size_t i=0; i<MatchingList.size()-2; i++)
       {if (i==aa-3) temp.push_back(bb-2);
-       if (i==bb-3) temp.push_back(aa-2);
+        if (i==bb-3) temp.push_back(aa-2);
        if (i !=aa-3 and i != bb-3) temp.push_back(MatchingList[i+2]-2); }
     MatchingList=temp;
     vector<int> temp2;
