@@ -13,6 +13,7 @@ cpp_sources.remove(cpp_dir + '/Main.cpp')
 hfk = Extension(
     name = 'zs_hfk/hfk',
     sources = ['cython_src/hfk.cpp'] + cpp_sources,
+    include_dirs = [cpp_dir],
     extra_compile_args = ['-O3', '-std=c++11'],
 )
 

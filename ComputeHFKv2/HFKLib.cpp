@@ -188,8 +188,7 @@ static void KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag, ostream& os) 
 
 // The one and only function exported by this module.
 
-extern "C" void
-PDCodeToMorseAndHFK(
+void PDCodeToMorseAndHFK(
   char *pd,
   int prime,
   char **morse,
