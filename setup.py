@@ -10,11 +10,16 @@ cpp_dir = 'ComputeHFKv2'
 cpp_sources = glob.glob(cpp_dir + os.sep + '*.cpp')
 cpp_sources.remove(cpp_dir + os.sep + 'Main.cpp')
 
+if sys.platform != 'win32': 
+    compile_args = ['-O3', '-std=c++11']
+else:
+    compile_args = []
+
 hfk = Extension(
-    name = 'zs_hfk/hfk',
+    name = 'zs_hfk.hfk',
     sources = ['cython_src/hfk.cpp'] + cpp_sources,
     include_dirs = [cpp_dir],
-    extra_compile_args = ['-O3', '-std=c++11'],
+    extra_compile_args = compile_args,
 )
 
 class HFKClean(Command):
