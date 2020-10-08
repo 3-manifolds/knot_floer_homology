@@ -42,10 +42,11 @@ bool PlanarDiagram::NotValid() const { //partial check on data, also checks if i
   for (size_t i = 0; i < 2*x; i++)
     if (CrList[i] != (i/2)+1) 
       return true;
+  int z = 2*x-1;
   for (size_t i = 0; i < x; i++)
-    if (PD[4*i]-PD[4*i+2] != -1 &&  PD[4*i]-PD[4*i+2] != 2*x-1) 
+    if (PD[4*i]-PD[4*i+2] != -1 &&  PD[4*i]-PD[4*i+2] != z) 
       return true;
-    else if (abs(PD[4*i+1] -PD[4*i+3]) != 1 && abs(PD[4*i+1]-PD[4*i+3]) != 2*x-1)
+    else if (abs(PD[4*i+1] -PD[4*i+3]) != 1 && abs(PD[4*i+1]-PD[4*i+3]) != z)
       return true; 
   return false;
 }
