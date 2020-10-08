@@ -88,6 +88,36 @@ static void KnotFloerRanksAsDict(const KnotFloerComplex& KFC, ostream& os)
   os << "}" << endl;
 }
 
+
+static void MorseCodeAsEvents(MorseCode& code, ostream& os)
+{
+    int c;
+    vector<int> Morse = code.GetMorseList();
+    os << "{" << endl;
+    ITEM(os, "girth", code.GetGirth());
+    os << "  \"events\": [";
+    for (size_t i = 0; i < Morse.size(); i++){
+	if (Morse[i] >999){
+	    c = Morse[++i];
+	    os << "('cup', " << c - 1 << ", " << c << ")," << endl;
+	}
+	else if (Morse[i] >-1000){
+	    c = Morse[i];
+	    if (c > 0){
+		os << "('cross', " << c - 1 << ", " << c << "), " << endl;
+	    }
+	    else{
+                c = abs(c);
+		os << "('cross', " << c << ", " << c - 1 << "), " << endl;
+	    }
+	}
+	else{
+	    os << "('cap', 0, 1)," << endl;
+	}
+    }
+    os << "]}" << endl;
+}
+
 // Variant of KnotFloerForAlternatingKnots with a different output format.
 
 static void KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag, ostream& os) {
@@ -197,7 +227,7 @@ PDCodeToMorseAndHFK(
   if (!inputIsInvalid) {
     if(Diag.Alternating()) {
       MorseCode M = Diag.GetSmallGirthMorseCode(10);
-      M.Print(Morse);
+      MorseCodeAsEvents(M, Morse);
       if (hfk) {
 	KnotFloerForAlternatingKnotsAsDict(Diag, HFK);
       }
@@ -206,7 +236,7 @@ PDCodeToMorseAndHFK(
       if (M.GetGirth() > 2*MAXBRIDGE) {
 	Error << "Girth number exceeds " << 2*MAXBRIDGE;
       } else {
-	M.Print(Morse);
+	MorseCodeAsEvents(M, Morse);
 	if (hfk) {
 	    KnotFloerComplex KFC=ComputingKnotFloer(M, prime);
 	    HFK << "{" << endl;

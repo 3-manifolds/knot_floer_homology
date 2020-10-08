@@ -1,5 +1,6 @@
 from libc.stdlib cimport free
-cdef extern void PDCodeToMorseAndHFK(char *pd, int prime, char** morse, char **hfk, char **error)
+cdef extern void PDCodeToMorseAndHFK(char *pd, int prime, char** morse,
+                                     char **hfk, char **error)
 
 def pd_to_morse(pd, int prime=2):
     cdef char* morse

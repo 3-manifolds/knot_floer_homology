@@ -410,23 +410,10 @@ def morse_encoding_from_zs_hfk(link):
     """
     import zs_hfk
     pd = 'PD: ' + repr(link.PD_code())
-    zs_morse = zs_hfk.pd_to_morse(pd, 2).strip().split('\n')[0]
-    events = []
-    for part in zs_morse[12:-1].split(', '):
-        if part.startswith('Max'):
-            c = int(part[4:-1])
-            events.append(('cup', c - 1, c))
-        elif part == 'Min':
-            events.append(('cap', 0, 1))
-        else:
-            c = int(part)
-            if c > 0:
-                events.append(('cross', c - 1, c))
-            else:
-                c = abs(c)
-                events.append(('cross', c, c - 1))
-
-    return MorseEncoding(events)
+    zs_morse = eval(zs_hfk.pd_to_morse(pd))
+    ans = MorseEncoding(zs_morse['events'])
+    assert zs_morse['girth'] == ans.width
+    return ans
         
 def orient_pres_isometric(A, B):
     for iso in A.is_isometric_to(B, True):
