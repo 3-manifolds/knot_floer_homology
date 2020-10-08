@@ -1,4 +1,5 @@
 # distutils: language = c++
+# cython: language_level = 2
 
 from libc.stdlib cimport free
 cdef extern void PDCodeToMorseAndHFK(char *pd, int prime, char** morse,
