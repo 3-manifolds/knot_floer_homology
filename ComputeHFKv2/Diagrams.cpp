@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void MorseCode::Print(ostream & os) {
+void MorseCode::Print(ostream & os) const {
   os<<"Morse Code: ";
   for (size_t i = 0; i < MorseList.size(); i++)
     if (MorseList[i] >999)
@@ -21,62 +21,62 @@ void MorseCode::Print(ostream & os) {
   os<<"Girth: "<<Girth<<"\n\n";
 }
 
-void PlanarDiagram::Print(ostream & os) {
-  vector<int> PD = ListOfTuples;
+void PlanarDiagram::Print(ostream & os) const {
+  const vector<int> &PD = ListOfTuples;
   os<<"Planar Diagram: [";
   for (size_t i = 0; i < PD.size()/4; i++)
     os<<"["<<PD[4*i]<<", "<<PD[4*i+1]<<", "<<PD[4*i+2]<<", "<<PD[4*i+3]<<"], ";
   os<<"]\n";
 } 
 
-bool PlanarDiagram::NotValid() { //partial check on data, also checks if it has more than 1 component
-  vector<int> PD = ListOfTuples; 
-  int y = PD.size();
+bool PlanarDiagram::NotValid() const { //partial check on data, also checks if it has more than 1 component
+  const vector<int> &PD = ListOfTuples; 
+  size_t y = PD.size();
   if (y == 0) 
     return true;
   if (y%4 != 0) 
     return true;
   vector<int> CrList = PD;
   sort(CrList.begin(), CrList.end());
-  int x=y/4;
-  for (int i = 0; i < 2*x; i++)
+  size_t x=y/4;
+  for (size_t i = 0; i < 2*x; i++)
     if (CrList[i] != (i/2)+1) 
       return true;
-  for (int i = 0; i < x; i++)
-    if (PD[4*i]-PD[4*i+2] != -1 and  PD[4*i]-PD[4*i+2] != 2*x-1) 
+  for (size_t i = 0; i < x; i++)
+    if (PD[4*i]-PD[4*i+2] != -1 &&  PD[4*i]-PD[4*i+2] != 2*x-1) 
       return true;
-    else if (abs(PD[4*i+1] -PD[4*i+3]) != 1 and abs(PD[4*i+1]-PD[4*i+3]) != 2*x-1)
+    else if (abs(PD[4*i+1] -PD[4*i+3]) != 1 && abs(PD[4*i+1]-PD[4*i+3]) != 2*x-1)
       return true; 
   return false;
 }
   
-bool PlanarDiagram::Alternating() {
-  vector<int> PD = ListOfTuples;  
-  int x = PD.size()/4; 
+bool PlanarDiagram::Alternating() const {
+  const vector<int> &PD = ListOfTuples;  
+  size_t x = PD.size()/4; 
   int a = PD[0]%2;
-  for (int i = 1; i < x; i++)
+  for (size_t i = 1; i < x; i++)
     if (a != (PD[4*i]%2)) 
       return false;
   return true;
 }
   
-bool PlanarDiagram::R1Reducible() {
-  vector<int> PD = ListOfTuples;
-  int x = PD.size()/4;
-  for (int i = 0; i < x; i++)
-    if (PD[4*i] == PD[4*i+1] or PD[4*i+1] == PD[4*i+2] or PD[4*i+2]==PD[4*i+3] or PD[4*i+3]==PD[4*i]) 
+bool PlanarDiagram::R1Reducible() const {
+  const vector<int> &PD = ListOfTuples;
+  size_t x = PD.size()/4;
+  for (size_t i = 0; i < x; i++)
+    if (PD[4*i] == PD[4*i+1] || PD[4*i+1] == PD[4*i+2] || PD[4*i+2]==PD[4*i+3] || PD[4*i+3]==PD[4*i]) 
       return true;
   return false;
 }
 
-PlanarDiagram::PlanarDiagram(string S){
+PlanarDiagram::PlanarDiagram(const string &S){
   ListOfTuples = vector<int>();  
   int x = '0'; 
   int y = '9';
   int a = 0; 
   bool BuildingInt = false; 
     for (size_t i = 0; i < S.size(); i++) 
-      if (S[i] < x or S[i] > y) {
+      if (S[i] < x || S[i] > y) {
 	if (BuildingInt == true) { //just finished reading an integer  
 	  ListOfTuples.push_back(a);  a = 0; BuildingInt = false;
 	}
@@ -93,8 +93,8 @@ PlanarDiagram::PlanarDiagram(string S){
     }
 }
 
-MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) {
-  vector<int> PD=ListOfTuples;
+MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
+  const vector<int> &PD=ListOfTuples;
   int x=PD.size()/4;
   size_t SmallestGirth=10000; 
   long long Complexity=1000000000;
@@ -127,8 +127,8 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) {
             int MaxCon=1; 
             for(int j=0;j<x; j++)
 	       {if(CrossingUsed[j]==1) continue; 
-		 if(A<x-2 and  (PD[4*j]==lastStrand or PD[4*j+1]==lastStrand 
-		 	       or PD[4*j+2]==lastStrand or PD[4*j+3]==lastStrand ) )
+		 if(A<x-2 &&  (PD[4*j]==lastStrand || PD[4*j+1]==lastStrand 
+		 	       || PD[4*j+2]==lastStrand || PD[4*j+3]==lastStrand ) )
 		             continue; //not gluing to the last strand
 		  
 		int Con=0; vector<int> Where;
@@ -152,8 +152,8 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) {
              vector<int> V(4); for(int k=0; k<4; k++) V[k]=PD[4*NextC +k];
              
              size_t t=0;
-             while(t<temp.size() and temp[t] != V[0] and temp[t] != V[1] 
-                                 and temp[t] != V[2] and temp[t] != V[3])
+             while(t<temp.size() && temp[t] != V[0] && temp[t] != V[1] 
+                                 && temp[t] != V[2] && temp[t] != V[3])
 	            t++;
              int FirstPosition =t; 
              int k=0; while(V[k] != temp[FirstPosition]) k++;//k is between 0 and 3;
@@ -204,7 +204,7 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) {
             if(B> SmallestGirth) break; //if this partial sequence is already bad, we start the next cycle
 	   }
             	
-	 if(B < SmallestGirth or (B==SmallestGirth  and  TempComplexity< Complexity ))//saving the impoved MorseList:
+	 if(B < SmallestGirth || (B==SmallestGirth  &&  TempComplexity< Complexity ))//saving the impoved MorseList:
            {SmallestGirth=B;  Complexity=TempComplexity; MorseList=TempMorseList;}
 	}
         
