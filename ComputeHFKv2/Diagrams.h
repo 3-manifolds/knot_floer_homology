@@ -5,53 +5,50 @@
 #include<string>
 #include<iostream>
 
-using namespace std;
-
-
 class MorseCode {
   private: 
-  vector<int> MorseList;
+  std::vector<int> MorseList;
   int Girth;
 
   public:  
-  MorseCode(vector<int> X, int G) {
-    MorseList=X;
-    Girth=G;
+  MorseCode(const std::vector<int> X, int G)
+      : MorseList(X), Girth(G)
+  {
   };
   
-  vector<int> GetMorseList() {
+  const std::vector<int> &GetMorseList() const {
     return MorseList;
   };
   
-  int GetGirth() {
+  int GetGirth() const {
     return Girth;
   };
 
-  void Print(ostream & os);
+  void Print(std::ostream & os) const;
 };
 
 
 class PlanarDiagram {
   private:
-  vector<int> ListOfTuples;
+  std::vector<int> ListOfTuples;
 
   public:
 
-  vector<int> GetListOfTuples() {
+  const std::vector<int> &GetListOfTuples() const {
     return ListOfTuples;
   };
 
-  PlanarDiagram(string S);
+  PlanarDiagram(const std::string &S);
   
-  bool NotValid();
+  bool NotValid() const;
   
-  bool Alternating();
+  bool Alternating() const;
 
-  MorseCode GetSmallGirthMorseCode(int MaxNumberOfTries = 10000);
+  MorseCode GetSmallGirthMorseCode(int MaxNumberOfTries = 10000) const;
 
-  bool R1Reducible();
+  bool R1Reducible() const;
   
-  void Print(ostream & os);
+  void Print(std::ostream & os) const;
 };
 
 #endif
