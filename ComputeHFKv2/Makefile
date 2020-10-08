@@ -1,3 +1,5 @@
+# Not currently used!
+
 ifeq ($(shell uname -s),Darwin)
 CXXFLAGS := -std=c++11 -O3 -g -mmacosx-version-min=10.9
 else
