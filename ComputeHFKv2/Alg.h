@@ -213,4 +213,7 @@ void RemoveMod(vector<Arrow> &);
   //Renames the generators so that GeneratorList[i].Name=i, updates ArrowList:
 void ReName();
 
+template<typename T>
+int sizeAsInt(const T& v) { return static_cast<int>(v.size()); }
+
 #endif
