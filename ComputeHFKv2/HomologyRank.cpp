@@ -53,7 +53,7 @@ int  HomologyRank(const ChainComplex & OldComplex)//used for Tau, NuPlus, NuMinu
          int n=-1, Connectivity=10000000;//looking for a short differential out of i  
          for(int j=0; j<(int)X.size(); j++) 
 	   {ChainArrow Arr=ArrList[X[j]];  //Arr connects i to ArrList[X[j]].EndingGen 
-	     if( Arr.Coeff !=0  && Maps2[Arr.EndingGen].size() <Connectivity) 
+	     if( Arr.Coeff !=0  && (int)Maps2[Arr.EndingGen].size() < Connectivity) 
 	       {n=j; Connectivity=(int)((Maps2[Arr.EndingGen]).size());}}
          if(n==-1) continue; 
          else Y=ArrList[X[n]]; //found a  differential Y between From and To
@@ -111,7 +111,8 @@ int  HomologyRank(const ChainComplex & OldComplex)//used for Tau, NuPlus, NuMinu
            
            //If the size of the ArrowList increased too much and there are still elements to process in Candidates,
            //rearrange the data: 
-           if(CurrentSize > OldSize + OldSize/3 + 10000 && i<Candidates.size()-1) // deleting those with Coeff=0.
+           if(CurrentSize > OldSize + OldSize/3 + 10000 &&
+	      i<(int)Candidates.size()-1) // deleting those with Coeff=0.
 	    {for(int j=0; j< x; j++) {Maps1[j].clear(); Maps2[j].clear();}
 	     int v=0;
 	     for(int j=0; j< CurrentSize; j++)

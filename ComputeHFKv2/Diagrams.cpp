@@ -14,7 +14,7 @@ void MorseCode::Print(ostream & os) const {
       os<<"Max("<< MorseList[++i]<<"), ";
     else if (MorseList[i] >-1000)
       os<<MorseList[i]<<", ";
-    else if (i < MorseList.size()-1)
+    else if (i < (int)MorseList.size()-1)
       os<<"Min, ";   
     else 
       os<<"Min.\n";
@@ -152,8 +152,8 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
              vector<int> V(4); for(int k=0; k<4; k++) V[k]=PD[4*NextC +k];
              
              int t=0;
-             while(t<temp.size() && temp[t] != V[0] && temp[t] != V[1] 
-                                 && temp[t] != V[2] && temp[t] != V[3])
+             while(t<(int)temp.size() && temp[t] != V[0] && temp[t] != V[1] 
+		   && temp[t] != V[2] && temp[t] != V[3])
 	            t++;
              int FirstPosition =t; 
              int k=0; while(V[k] != temp[FirstPosition]) k++;//k is between 0 and 3;

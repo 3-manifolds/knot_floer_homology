@@ -55,8 +55,8 @@ void Simplify()
 	   {Arrow Arr=ArrowList[X[j]];  int c=Arr.EndingGen;
             if( Arr.Coeff !=0 
                 && GeneratorList[From].Idem == GeneratorList[c].Idem 
-	        && Arr.MonomialIndex==0  && (Maps2[c]).size() <Connectivity) 
-	      {index=j; To=c; Connectivity=(int)(Maps2[c]).size();}
+	        && Arr.MonomialIndex == 0  && (int)Maps2[c].size() < Connectivity) 
+	      {index=j; To=c; Connectivity=(int)Maps2[c].size();}
 	   }
          if(index==-1) continue; 
          Arrow Y=ArrowList[X[index]]; 
@@ -118,7 +118,7 @@ void Simplify()
          //Before starting a new cycle:  
          //If the size of the ArrowList increased too much a 
          //rearrange the data: 
-         if(CurrentSize > 2*OldSize + 10000 && i<Candidates.size()-1) 
+         if(CurrentSize > 2*OldSize + 10000 && i<(int)Candidates.size()-1) 
          // deleting those with Coeff=0:
 	    {for(int j=0; j< x; j++) {Maps1[j].clear(); Maps2[j].clear();}
 	     int Write=0;
