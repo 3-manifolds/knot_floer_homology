@@ -39,7 +39,11 @@ extern vector<Term> AfterMaxAlt(vector<Term> Old, int Position);
 extern vector<Term> AfterMinAlt(vector<Term> Old);
 extern vector<Term> AfterCrossingAlt(vector<Term> Old, int Crossing);
 extern int Signature (PlanarDiagram Diag);
-  
+
+// Get permssion to call strcpy on Windows without a warning.
+
+#define _CRT_SECURE_NO_WARNINGS
+
 // static helpers
 
 #define ITEM(stream, key, value)					\
@@ -59,8 +63,14 @@ static bool isPrime(int n) {
 
 static void createCString(char **p, ostringstream& s) {
   if (p) {
-    *p = (char *) malloc(s.str().length() + 1);
-    strcpy(*p, s.str().c_str());
+    size_t bufferSize = s.str().length() + 1;
+    *p = (char *) malloc(bufferSize);
+#if defined(_MSC_VER)
+    strcpy_s(*p, bufferSize, s.str().c_str());
+#else
+    strncpy(*p, s.str().c_str(), bufferSize);
+
+#endif
   }
 }
 
