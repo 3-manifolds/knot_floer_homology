@@ -42,7 +42,8 @@ int  HomologyRank(const ChainComplex & OldComplex)//used for Tau, NuPlus, NuMinu
       
     vector<pair<int,int>> Candidates;
     for(int i=0; i<x; i++)
-        if(Maps1[i].size()>0) Candidates.push_back( make_pair( Maps1[i].size() ,i)); 
+        if(Maps1[i].size()>0)
+	  Candidates.push_back( { static_cast<int>(Maps1[i].size()), i } );
     sort(Candidates.begin(),Candidates.end());
  
       //we start the contracting algorithm

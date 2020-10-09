@@ -35,7 +35,8 @@ void Simplify()
                  GeneratorList[a].Idem == GeneratorList[b].Idem)
 	       FoundShortArrow=true;
 	    }
-	 if(FoundShortArrow) Candidates.push_back(make_pair(X.size(), i)); 
+	 if(FoundShortArrow)
+	   Candidates.push_back( { static_cast<int>(X.size()), i } );
 	}
      
     if(Candidates.size()>0)    
