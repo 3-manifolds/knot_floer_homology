@@ -27,7 +27,7 @@ int MonomialLookUp(const monomial& X)
 {   auto iter=MonomialMap.find(X); 
     if(iter !=MonomialMap.end() ) 
           return (*iter).second;
-    else {int z=(int)MonomialStore.size(); 
+    else {int z=sizeAsInt(MonomialStore); 
           MonomialMap.insert(make_pair(X,z) ); 
           MonomialStore.push_back(X);
           return z;} 
