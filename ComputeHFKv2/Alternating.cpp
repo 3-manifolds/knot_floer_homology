@@ -75,7 +75,7 @@ vector<Term> AfterMinAlt(vector<Term> Old)
         else  {G.Idem= G.Idem/4 -1; New.push_back(G);} 
        }
     vector<int> temp;
-    for (int i=0; i<(int)UpwardList.size()-2;i++) 
+    for (int i=0; i<INT_SIZE(UpwardList)-2;i++) 
        temp.push_back(UpwardList[i+2]);
     UpwardList=temp;
     Bridge=Bridge-1;
@@ -125,7 +125,7 @@ idem ExtendZA(idem I1, int Position)
 
 int Signature (PlanarDiagram Diag)//for an alternating projection
 {   vector<int> PD = Diag.GetListOfTuples(); 
-  int x=(int)PD.size()/4;
+  int x=INT_SIZE(PD)/4;
     int Positive=0; //number of positive crossings
     for(int i=0; i<x; i++) if((PD[4*i+1]+2*x-PD[4*i+3])%(2*x)==1) Positive++; 
 
@@ -149,7 +149,7 @@ void KnotFloerForAlternatingKnots(PlanarDiagram Diag, ostream & os)
     if(Morse[0]==1000) {UpwardList.push_back(1); UpwardList.push_back(0);}
     if(Morse[0]==1001) {UpwardList.push_back(0); UpwardList.push_back(1);}
 
-    int Steps=(int)Morse.size();
+    int Steps=INT_SIZE(Morse);
     for(int i=2; i< Steps -1 ; i++)
 	{if (Morse[i]==1000)                                           
 	    {int Position= Morse[i+1]; Current=AfterMaxAlt(Current,Position); 
@@ -168,7 +168,7 @@ void KnotFloerForAlternatingKnots(PlanarDiagram Diag, ostream & os)
 
     int delta=-Signature(Diag)/2;
     map<int,int> Range;
-    for(int i=0; i<(int)Current.size(); i++) 
+    for(int i=0; i<INT_SIZE(Current); i++) 
 	{Term G=Current[i]; Range[G.Alexander]=G.Coeff;}
       
     int TotalRank=0;  
