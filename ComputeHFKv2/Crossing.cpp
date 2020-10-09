@@ -345,9 +345,9 @@ void  NegM3(Arrow arrow1, Arrow arrow2, int n)//EndCor=South
 
 
 void  M3Actions(int Crossing)
-{   int x=INT_SIZE(ArrowList); 
+{   int x=sizeAsInt(ArrowList); 
     if(x==0) return;
-    int y=INT_SIZE(GeneratorList);
+    int y=sizeAsInt(GeneratorList);
     vector<int> X(y+1,0);
     for(int i=0; i<x; i++) X[ArrowList[i].StartingGen]++;
     X[y]=x;
@@ -377,7 +377,7 @@ void AfterCrossing(int Crossing)
     int Sign1=UpwardList[n-1]; int Sign2=UpwardList[n];
     UpwardList[n-1]=Sign2; UpwardList[n]=Sign1;
     
-    int x=INT_SIZE(GeneratorList);
+    int x=sizeAsInt(GeneratorList);
     for(int i=0; i<x; i++)
       for(int Cor=0; Cor<4; Cor++)
 	{Gen G=GeneratorList[i]; 
