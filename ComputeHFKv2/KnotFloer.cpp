@@ -26,7 +26,7 @@ KnotFloerComplex  ComputingKnotFloer(MorseCode Morse, int Prime, bool verbose){
     if(MorseList[0]==1000) {UpwardList.push_back(1); UpwardList.push_back(0);} 
     if(MorseList[0]==1001) {UpwardList.push_back(0); UpwardList.push_back(1);}
      
-    int Steps=MorseList.size();
+    int Steps=(int)MorseList.size();
     if (verbose) {
       cout<<"Computation is with mod "<<Modulus<<" coefficients"<<endl;
       cout<<"Steps to do:"<<endl;

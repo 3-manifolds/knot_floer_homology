@@ -18,18 +18,18 @@ using namespace std;
 enum{North, East, West, South};
 
 inline  bool Extendable(idem x, int n, int Cor) 
-{   if(Cor==North) return  (x & (1<< n));
+{   if(Cor==North) return  !!(x & (1<< n));
     if(Cor==South) return !(x & (1<< n));
     if(Cor==West)  return ( !(x & (1<< n)) && (x & (1<<(n-1))) );
     if(Cor==East)  return ( !(x & (1<< n)) && (x & (1<<(n+1))) );
-    return -1; /* Avoid compiler warning */
+    return false; /* Avoid compiler warning */
 }
 
 inline  idem Extend(idem x, int n, int Cor)
 {   if(Cor==North || Cor==South) return x;
     if(Cor==East) return x-(1<<n);
     if(Cor==West) return x+(1<<(n-1));
-    return -1; /* Avoid compiler warning */
+    return false; /* Avoid compiler warning */
 }
 
 ////////////
@@ -345,9 +345,9 @@ void  NegM3(Arrow arrow1, Arrow arrow2, int n)//EndCor=South
 
 
 void  M3Actions(int Crossing)
-{   int x=ArrowList.size(); 
+{   int x=(int)ArrowList.size(); 
     if(x==0) return;
-    int y=GeneratorList.size();
+    int y=(int)GeneratorList.size();
     vector<int> X(y+1,0);
     for(int i=0; i<x; i++) X[ArrowList[i].StartingGen]++;
     X[y]=x;
@@ -377,7 +377,7 @@ void AfterCrossing(int Crossing)
     int Sign1=UpwardList[n-1]; int Sign2=UpwardList[n];
     UpwardList[n-1]=Sign2; UpwardList[n]=Sign1;
     
-    int x=GeneratorList.size();
+    int x=(int)GeneratorList.size();
     for(int i=0; i<x; i++)
       for(int Cor=0; Cor<4; Cor++)
 	{Gen G=GeneratorList[i]; 

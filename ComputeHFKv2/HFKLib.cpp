@@ -96,7 +96,7 @@ static void MorseCodeAsEvents(MorseCode& code, ostream& os)
     os << "{" << endl;
     ITEM(os, "girth", code.GetGirth());
     os << "  \"events\": [";
-    for (size_t i = 0; i < Morse.size(); i++){
+    for (int i = 0; i < (int)Morse.size(); i++){
 	if (Morse[i] >999){
 	    c = Morse[++i];
 	    os << "('cup', " << c - 1 << ", " << c << ")," << endl;
@@ -134,7 +134,7 @@ static void KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag, ostream& os) 
     UpwardList.push_back(0);
     UpwardList.push_back(1);
   }
-  int Steps=Morse.size();
+  int Steps=(int)Morse.size();
   for(int i=2; i< Steps -1 ; i++) {
     if (Morse[i] == 1000) {
       int Position = Morse[i+1];
@@ -157,7 +157,7 @@ static void KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag, ostream& os) 
 
   int delta=-Signature(Diag)/2;
   map<int,int> Range;
-  for(size_t i = 0; i < Current.size(); i++) {
+  for(int i = 0; i < (int)Current.size(); i++) {
     Term G = Current[i];
     Range[G.Alexander] = G.Coeff;
   }

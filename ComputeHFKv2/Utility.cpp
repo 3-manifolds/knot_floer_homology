@@ -27,7 +27,7 @@ int MonomialLookUp(const monomial& X)
 {   auto iter=MonomialMap.find(X); 
     if(iter !=MonomialMap.end() ) 
           return (*iter).second;
-    else {int z=MonomialStore.size(); 
+    else {int z=(int)MonomialStore.size(); 
           MonomialMap.insert(make_pair(X,z) ); 
           MonomialStore.push_back(X);
           return z;} 
@@ -49,12 +49,11 @@ bool TooFar(idem I1, idem I2)
 bool NonZero(idem I1, idem I2, int m)
 {   monomial P=MonomialStore[m];      
     bool crossed=false;      //Measures if the  wall is crossed. 
-    bool b; bool c;          
+    bool b, c, d;          
     bool r=true;             //If r is true we need to check the U_j power in P
-    bool d; 
     int j=0; int i=2*Bridge;          
     while(i--)
-      {I1=I1>>1; I2=I2>>1; d=P[j]; j++;
+      {I1=I1>>1; I2=I2>>1; d=!!P[j]; j++;
        b=(I1 & 1); //b=true if I1 has a coordinate between walls j and j+1
        c=(I2 & 1);  
        if(r && (!b  || !c) && d) return false; //found the intervall

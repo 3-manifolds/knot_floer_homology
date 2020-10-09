@@ -41,7 +41,7 @@ idem ExtendZ(idem I1, int Position)
 void MaxM2Action(Arrow arrow1, int Position)//Bridge is increased before
 {   idem I1=GeneratorList[arrow1.StartingGen].Idem;
     idem I2=GeneratorList[arrow1.EndingGen].Idem;
-    bool XY= (I1 &(1<<(Position-1)));
+    bool XY= !!(I1 &(1<<(Position-1)));
     bool Z= !XY;
 
     monomial m=MonomialStore[arrow1.MonomialIndex];
@@ -166,7 +166,7 @@ void AfterMax(int Position, int Orientation)
      
     for(Gen G: GeneratorList)   //Names X=3*a, Y=3*a+1, Z=3*a+2
       {idem I1=G.Idem; int a=G.Name;
-       bool XY= (I1 &(1<<(Position-1)));
+       bool XY= !!(I1 &(1<<(Position-1)));
        bool Z= !XY ;
        
        if(Z) {G.Idem=ExtendZ(I1, Position); G.Name=3*a+2; 

@@ -64,7 +64,7 @@ int LowestFiltrationWithMaslovZero(const KnotFloerComplex & KFC)
 }
 
 int Tau(const KnotFloerComplex & KFC)  
-{   int x=KFC.Generators.size();     
+{   int x=(int)KFC.Generators.size();
     int Rank1=0; int Rank2=1; int genus=Genus(KFC); 
     int j= LowestFiltrationWithMaslovZero(KFC);       
     while(Rank2==Rank1+1 && j<=genus)
@@ -99,7 +99,7 @@ int Tau(const KnotFloerComplex & KFC)
 }
 
 int Nu(const KnotFloerComplex & KFC){ 
-    int x=KFC.Generators.size(); 
+  int x=(int)KFC.Generators.size(); 
     int Rank1=0; int Rank2=1; 
     int j=Tau(KFC); int genus=Genus(KFC);
       

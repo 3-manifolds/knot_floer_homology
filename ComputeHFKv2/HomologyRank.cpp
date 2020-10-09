@@ -6,7 +6,7 @@
 using namespace std;
 
 int  HomologyRank(const ChainComplex & OldComplex)//used for Tau, NuPlus, NuMinus
-{   int x=OldComplex.Generators.size(); int y=OldComplex.Differential.size(); int deleted=0;
+{   int x=(int)OldComplex.Generators.size(), y=(int)OldComplex.Differential.size(), deleted=0;
     if(y==0) return x;
     int OldSize=y;
     int CurrentSize=y;
@@ -46,15 +46,15 @@ int  HomologyRank(const ChainComplex & OldComplex)//used for Tau, NuPlus, NuMinu
     sort(Candidates.begin(),Candidates.end());
  
       //we start the contracting algorithm
-    for(size_t i=0; i<Candidates.size(); i++)      
+    for(int i=0; i<(int)Candidates.size(); i++)      
 	{int r=(Candidates[i]).second;
          X=Maps1[r]; 
          if( X.size()==0 ) continue;
-         int n=-1; size_t Connectivity=10000000;//looking for a short differential out of i  
-         for(size_t j=0; j<X.size(); j++) 
+         int n=-1, Connectivity=10000000;//looking for a short differential out of i  
+         for(int j=0; j<(int)X.size(); j++) 
 	   {ChainArrow Arr=ArrList[X[j]];  //Arr connects i to ArrList[X[j]].EndingGen 
-            if( Arr.Coeff !=0  && (Maps2[Arr.EndingGen]).size() <Connectivity) 
-	      {n=j; Connectivity=(Maps2[Arr.EndingGen]).size();}}
+	     if( Arr.Coeff !=0  && Maps2[Arr.EndingGen].size() <Connectivity) 
+	       {n=j; Connectivity=(int)((Maps2[Arr.EndingGen]).size());}}
          if(n==-1) continue; 
          else Y=ArrList[X[n]]; //found a  differential Y between From and To
          int Inverse=0; //used when contracting Y;
@@ -64,10 +64,10 @@ int  HomologyRank(const ChainComplex & OldComplex)//used for Tau, NuPlus, NuMinu
          
          //Contract the short differential: Update the arrows and mark From and To as deleted:
          NewDifferentials.clear(); 
-         for(size_t i1=0; i1< P.size(); i1++)//creating new arrows from zig-zags
+         for(int i1=0; i1< (int)P.size(); i1++)//creating new arrows from zig-zags
                {ChainArrow temp1=ArrList[P[i1]]; 
 		if (temp1.Coeff ==0 || temp1.StartingGen==From) continue;//we exclude Y and already deleted arrows  
-	        for(size_t i2=0; i2< X.size(); i2++)
+	        for(int i2=0; i2<(int)X.size(); i2++)
 	              {ChainArrow temp2=ArrList[X[i2]];
 		       if(temp2.Coeff ==0 || temp2.EndingGen==To) continue;//we exclude Y and already deleted arrows
 	               int a=temp1.StartingGen; int b=temp2.EndingGen;
@@ -80,10 +80,10 @@ int  HomologyRank(const ChainComplex & OldComplex)//used for Tau, NuPlus, NuMinu
                       }
 	       }
           
-	 for(size_t m=0; m<NewDifferentials.size();m++)
+	 for(int m=0; m<(int)NewDifferentials.size(); m++)
 	   {ChainArrow Q=NewDifferentials[m]; int a=Q.StartingGen; int b=Q.EndingGen;                   	               
                        // Either  Q existed before (with perhaps different coefficient) or Q is new. We add or update.
-	               int s=0; int f=Maps1[a].size();
+	     int s=0; int f=(int)Maps1[a].size();
                        while(s<f && ArrList[Maps1[a][s]].EndingGen !=b ) s++;
 		       if(s==f) //Q is new
 	                     {ArrList.push_back(Q); 
@@ -96,12 +96,12 @@ int  HomologyRank(const ChainComplex & OldComplex)//used for Tau, NuPlus, NuMinu
            //at this point all the zig-zag arrows are added. 
            //Next step is to make the arrows that connect to To or From invisible in ArrList:	
            vector<int> V1;  
-           for(size_t i3=0; i3< Maps1[From].size(); i3++) V1.push_back(Maps1[From][i3]);
-           for(size_t i3=0; i3< Maps1[To].size();   i3++) V1.push_back(Maps1[To][i3]);
-           for(size_t i3=0; i3< Maps2[From].size(); i3++) V1.push_back(Maps2[From][i3]);
-           for(size_t i3=0; i3< Maps2[To].size();   i3++) V1.push_back(Maps2[To][i3]);
+           for(int i3=0; i3<(int)Maps1[From].size(); i3++) V1.push_back(Maps1[From][i3]);
+           for(int i3=0; i3<(int)Maps1[To].size();   i3++) V1.push_back(Maps1[To][i3]);
+           for(int i3=0; i3<(int)Maps2[From].size(); i3++) V1.push_back(Maps2[From][i3]);
+           for(int i3=0; i3<(int)Maps2[To].size();   i3++) V1.push_back(Maps2[To][i3]);
   
-           for(size_t i4=0; i4<V1.size(); i4++) ArrList[V1[i4]].Coeff=0; //now there are "invisible"
+           for(int i4=0; i4<(int)V1.size(); i4++) ArrList[V1[i4]].Coeff=0; //now there are "invisible"
            DeletedNames[To]=1;
            DeletedNames[From]=1;
            deleted=deleted+2; 
@@ -124,8 +124,8 @@ int  HomologyRank(const ChainComplex & OldComplex)//used for Tau, NuPlus, NuMinu
                 }
 	      CurrentSize=v; OldSize=CurrentSize; ArrList.erase(ArrList.begin()+v, ArrList.end() ); 
 	      //Then reorder the remaining part of the Candidate list:
-              for(size_t j=i+1; j<Candidates.size();j++)
-		Candidates[j].first=Maps1[Candidates[j].second].size();
+              for(int j=i+1; j<(int)Candidates.size(); j++)
+		Candidates[j].first=(int)Maps1[Candidates[j].second].size();
               sort(Candidates.begin()+i+1, Candidates.end());
 	    }
 

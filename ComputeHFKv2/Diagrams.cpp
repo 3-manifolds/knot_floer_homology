@@ -9,7 +9,7 @@ using namespace std;
 
 void MorseCode::Print(ostream & os) const {
   os<<"Morse Code: ";
-  for (size_t i = 0; i < MorseList.size(); i++)
+  for (int i = 0; i < (int)MorseList.size(); i++)
     if (MorseList[i] >999)
       os<<"Max("<< MorseList[++i]<<"), ";
     else if (MorseList[i] >-1000)
@@ -24,14 +24,14 @@ void MorseCode::Print(ostream & os) const {
 void PlanarDiagram::Print(ostream & os) const {
   const vector<int> &PD = ListOfTuples;
   os<<"Planar Diagram: [";
-  for (size_t i = 0; i < PD.size()/4; i++)
+  for (int i = 0; i < (int)PD.size()/4; i++)
     os<<"["<<PD[4*i]<<", "<<PD[4*i+1]<<", "<<PD[4*i+2]<<", "<<PD[4*i+3]<<"], ";
   os<<"]\n";
 } 
 
 bool PlanarDiagram::NotValid() const { //partial check on data, also checks if it has more than 1 component
   const vector<int> &PD = ListOfTuples; 
-  size_t y = PD.size();
+  int y = (int)PD.size();
   if (y == 0) 
     return true;
   if (y%4 != 0) 
@@ -52,9 +52,9 @@ bool PlanarDiagram::NotValid() const { //partial check on data, also checks if i
   
 bool PlanarDiagram::Alternating() const {
   const vector<int> &PD = ListOfTuples;  
-  size_t x = PD.size()/4; 
+  int x = (int)PD.size()/4; 
   int a = PD[0]%2;
-  for (size_t i = 1; i < x; i++)
+  for (int i = 1; i < x; i++)
     if (a != (PD[4*i]%2)) 
       return false;
   return true;
@@ -62,8 +62,8 @@ bool PlanarDiagram::Alternating() const {
   
 bool PlanarDiagram::R1Reducible() const {
   const vector<int> &PD = ListOfTuples;
-  size_t x = PD.size()/4;
-  for (size_t i = 0; i < x; i++)
+  int x = (int)PD.size()/4;
+  for (int i = 0; i < x; i++)
     if (PD[4*i] == PD[4*i+1] || PD[4*i+1] == PD[4*i+2] || PD[4*i+2]==PD[4*i+3] || PD[4*i+3]==PD[4*i]) 
       return true;
   return false;
@@ -75,7 +75,7 @@ PlanarDiagram::PlanarDiagram(const string &S){
   int y = '9';
   int a = 0; 
   bool BuildingInt = false; 
-    for (size_t i = 0; i < S.size(); i++) 
+  for (int i = 0; i < (int)S.size(); i++) 
       if (S[i] < x || S[i] > y) {
 	if (BuildingInt == true) { //just finished reading an integer  
 	  ListOfTuples.push_back(a);  a = 0; BuildingInt = false;
@@ -95,13 +95,13 @@ PlanarDiagram::PlanarDiagram(const string &S){
 
 MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
   const vector<int> &PD=ListOfTuples;
-  int x=PD.size()/4;
-  size_t SmallestGirth=10000; 
+  int x=(int)(PD.size()/4);
+  int SmallestGirth=10000; 
   long long Complexity=1000000000;
   vector<int> MorseList;
-  int R=min(100+ x*x, MaxNumberOfTries); //randomly looking for a reasonable MorseList presentation 
+  int R=min(100+x*x, MaxNumberOfTries); //randomly looking for a reasonable MorseList presentation 
     for(int T=0; T< R; T++)
-        {size_t B=4; //computes the maximal intersection number with y=t in this cycle
+        {int B=4; //computes the maximal intersection number with y=t in this cycle
          int FirstC=rand()% x;  //the first crossing used the Morse presentation
          vector<int> TempMorseList(5);
          long long TempComplexity=0;
@@ -132,16 +132,16 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
 		             continue; //not gluing to the last strand
 		  
 		int Con=0; vector<int> Where;
-                for(int k=0;k<4;k++) 
-		  {int q=temp.end()-find(temp.begin(), temp.end(), PD[4*j+k] );
-		    if(q>0) {Con++; Where.push_back(q);}}  
+                for(int k=0;k<4;k++)
+		  {int q=(int)(temp.end()-find(temp.begin(), temp.end(), PD[4*j+k]));
+                    if(q>0) {Con++; Where.push_back(q);}}
 		if(Con==0) continue;                
                 sort(Where.begin(), Where.end());
                 if(Where[Con-1] - Where[0]> Con-1) continue; //crossing j attaches to temp in disjoint intervalls 
-		if(Con==MaxCon)  MostConnected.push_back(j);
-                else if(Con>MaxCon) {MaxCon=Con; MostConnected.clear(); MostConnected.push_back(j);}
+		if(Con==MaxCon)  MostConnected.push_back((int)j);
+                else if(Con>MaxCon) {MaxCon=Con; MostConnected.clear(); MostConnected.push_back((int)j);}
 	       }  
-	     int aa=MostConnected.size();
+	    int aa=(int)MostConnected.size();
              if (aa == 0) { //problem with planar diagram
                vector<int> Empty =vector<int>();
 	       return MorseCode(Empty, -1);
@@ -151,7 +151,7 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
              CrossingUsed[NextC]=1;
              vector<int> V(4); for(int k=0; k<4; k++) V[k]=PD[4*NextC +k];
              
-             size_t t=0;
+             int t=0;
              while(t<temp.size() && temp[t] != V[0] && temp[t] != V[1] 
                                  && temp[t] != V[2] && temp[t] != V[3])
 	            t++;
@@ -163,34 +163,34 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
 	     if(MaxCon==4) w=(2*FirstPosition+1)*w;
              TempComplexity+=w; //adding the "cost" of tensoring with  this bimodule
 
-             if(MaxCon==2 && k%2==0) TempMorseList.push_back(FirstPosition+1); //adding a positive crossing 
-             if(MaxCon==2 && k%2==1) TempMorseList.push_back(-FirstPosition-1);//or a negative crossing
+             if(MaxCon==2 && k%2==0) TempMorseList.push_back((int)(FirstPosition+1)); //adding a positive crossing 
+             if(MaxCon==2 && k%2==1) TempMorseList.push_back(-(int)(FirstPosition+1));//or a negative crossing
              
              if(MaxCon==1)   //this adds a maximum and a crossing 
                 {int a=(k+1)%4; int b=(k+3)%4;
                  if( (V[a]+1)%(2*x) == V[b]%(2*x) ) TempMorseList.push_back(1000); //maximum oriented to the right 
                  else   TempMorseList.push_back(1001); //or oriented to the left
-	         TempMorseList.push_back(FirstPosition+2); //where to put the maximum
-                 if(k%2==0) TempMorseList.push_back(FirstPosition+1); //adding a positive crossing 
-                 if(k%2==1) TempMorseList.push_back(-FirstPosition-1);//or negative crossing 
+	         TempMorseList.push_back((int)(FirstPosition+2)); //where to put the maximum
+                 if(k%2==0) TempMorseList.push_back((int)(FirstPosition+1)); //adding a positive crossing 
+                 if(k%2==1) TempMorseList.push_back(-(int)(FirstPosition+1));//or negative crossing 
 		}
 
              if(MaxCon >2 && k%2==0)
-	        {TempMorseList.push_back(-FirstPosition-2); //adding a crossing
-	        for(int a=FirstPosition; a>0;a--)  //repeated Reidemeister 2 moves pushing the minimum to the left 
+	       {TempMorseList.push_back(-(int)(FirstPosition+2)); //adding a crossing
+		 for(int a=(int)FirstPosition; a>0;a--)  //repeated Reidemeister 2 moves pushing the minimum to the left 
 	          {TempMorseList.push_back(-a); TempMorseList.push_back(-a-1);}
 	           TempMorseList.push_back(-1000); //adding the minimum at left
 		}
               
 	     if(MaxCon >2 && k%2==1) //similar as before, but crossing is positive
-               {TempMorseList.push_back(FirstPosition+2); 
-	       for(int a=FirstPosition; a>0;a--) 
+               {TempMorseList.push_back((int)(FirstPosition+2)); 
+		 for(int a=(int)FirstPosition; a>0;a--) 
 	         {TempMorseList.push_back(a); TempMorseList.push_back(a+1);}
 	          TempMorseList.push_back(-1000);
 	       }
 	
             if(MaxCon==4) //adding an extra minimum
-               {for(int a=FirstPosition; a>0;a--)
+	      {for(int a=(int)FirstPosition; a>0;a--)
 	          {TempMorseList.push_back(a);TempMorseList.push_back(a+1);}
 	           TempMorseList.push_back(-1000);
 	       }
@@ -200,7 +200,7 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
             for(int i=0;i<4-MaxCon ;i++)
             temp.insert(temp.begin()+FirstPosition+i, V[(k+i+1)%4 ]); 
                 
-            if (temp.size()>B) B=temp.size(); 
+            if ((int)temp.size()>B) B=(int)temp.size(); 
             if(B> SmallestGirth) break; //if this partial sequence is already bad, we start the next cycle
 	   }
             	

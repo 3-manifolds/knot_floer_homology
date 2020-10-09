@@ -9,7 +9,7 @@ using namespace std;
 //contracts short differentials in the D-module
 //Precondition: GeneratorList[i].Name=i;
 void Simplify()
-{   int x=GeneratorList.size(); int y=ArrowList.size(); 
+{   int x=(int)GeneratorList.size(), y=(int)ArrowList.size(); 
     if(y==0) return;
       
     //Preparation to contract.
@@ -29,7 +29,7 @@ void Simplify()
     for(int i=0; i<x; i++)
 	{vector<int> X=Maps1[i]; if(X.size()==0) continue;
 	 bool FoundShortArrow=false;  
-	 for(size_t j=0; j<X.size(); j++)
+	 for(int j=0; j<(int)X.size(); j++)
 	    {Arrow Y=ArrowList[X[j]]; int a=Y.StartingGen; int b=Y.EndingGen;
              if (Y.Coeff !=0 && Y.MonomialIndex==0 &&
                  GeneratorList[a].Idem == GeneratorList[b].Idem)
@@ -46,17 +46,17 @@ void Simplify()
     int OldSize=y;
     int CurrentSize=y;//current size of ArrowList
     //we start the contracting algorithm:
-    for(size_t i=0; i<Candidates.size(); i++)      
+    for(int i=0; i<(int)Candidates.size(); i++)      
 	{int From=(Candidates[i]).second; //Trying to eliminate "From"
 	 vector<int> X=Maps1[From]; if( X.size()==0 ) continue;
-         int index=-1; int To;  size_t Connectivity=1000000;
+         int index=-1, To, Connectivity=1000000;
          //looking for a short differential out of "From"
-         for(size_t j=0; j<X.size(); j++) 
+         for(int j=0; j<(int)X.size(); j++) 
 	   {Arrow Arr=ArrowList[X[j]];  int c=Arr.EndingGen;
             if( Arr.Coeff !=0 
                 && GeneratorList[From].Idem == GeneratorList[c].Idem 
 	        && Arr.MonomialIndex==0  && (Maps2[c]).size() <Connectivity) 
-	    {index=j; To=c; Connectivity=(Maps2[c]).size();}
+	      {index=j; To=c; Connectivity=(int)(Maps2[c]).size();}
 	   }
          if(index==-1) continue; 
          Arrow Y=ArrowList[X[index]]; 
@@ -88,7 +88,7 @@ void Simplify()
                 Q.Coeff=((A.Coeff)*(B.Coeff)*(Inverse)) % Modulus; 
                 // Either  Q existed before (with perhaps different 
                 //coefficient) or Q is new. We add or update:
-	        int s=0; int f=Maps1[a].size();
+	        int s=0; int f=(int)Maps1[a].size();
                 while(s<f && (ArrowList[Maps1[a][s]].EndingGen !=b 
                       || ! Equal(ArrowList[Maps1[a][s]], Q)) ) s++;
 	        if(s==f) //Q is new
@@ -134,8 +134,8 @@ void Simplify()
              
              //Candidates[0] to Candidates[i] are dealt with.
              //Reorder the remaining part of the Candidate list:
-             for(size_t j=i+1; j<Candidates.size();j++)
-	     Candidates[j].first=Maps1[Candidates[j].second].size();
+             for(int j=i+1; j<(int)Candidates.size(); j++)
+	       Candidates[j].first=(int)Maps1[Candidates[j].second].size();
              sort(Candidates.begin()+i+1, Candidates.end());
 	    }
 	}
@@ -150,7 +150,7 @@ void Simplify()
                 {GeneratorList[Write]=GeneratorList[i]; Write++;}
        GeneratorList.erase(GeneratorList.begin()+Write, GeneratorList.end());        
        Write=0;
-       for(size_t j=0; j<ArrowList.size(); j++)
+       for(int j=0; j<(int)ArrowList.size(); j++)
 	   if(ArrowList[j].Coeff !=0) {ArrowList[Write]=ArrowList[j]; Write++;}
         ArrowList.erase(ArrowList.begin()+Write, ArrowList.end());
       }

@@ -107,8 +107,8 @@ extern monomial MonomialOne;
 extern vector<monomial> MonomialStore; 
 
 struct Hash
-{  size_t operator() (const monomial& M) const
-  {size_t ans=0; int i=2*MAXBRIDGE; while(i--) ans=(ans<<3)+M[i]; return ans; }
+{  int operator() (const monomial& M) const
+  {int ans=0; int i=2*MAXBRIDGE; while(i--) ans=(ans<<3)+M[i]; return ans; }
 };                                     
 
   // Used for looking up the integer identifier:
