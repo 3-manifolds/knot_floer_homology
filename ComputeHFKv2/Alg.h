@@ -214,6 +214,6 @@ void RemoveMod(vector<Arrow> &);
 void ReName();
 
 template<typename T>
-int sizeAsInt(const T& v) { return static_cast<int>(v.size()); }
+inline int sizeAsInt(const T& v) { return static_cast<int>(v.size()); }
 
 #endif
