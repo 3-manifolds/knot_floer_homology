@@ -5,9 +5,8 @@ from libc.stdlib cimport free
 from cpython.ref cimport PyObject, Py_DECREF
 
 cdef extern from "HFKLib.h":
-    cdef void PDCodeToHFK(char *pd, int prime,
-                          char **hfk, char **error)
-    cdef PyObject* PDCodeToMorse(char *pd) except *
+    cdef PyObject* PDCodeToMorse(const char *pd) except *
+    cdef PyObject* PDCodeToHFK(const char *pd, int prime) except *
                                    
 def pd_to_morse(pd):
     """
@@ -24,7 +23,7 @@ def pd_to_morse(pd):
     Py_DECREF(result)
     return result
 
-def pd_to_hfk(pd, int prime=2):
+def pd_to_hfk(pd, int prime = 2):
     """
     >>> pd = 'PD(5,3,0,2),(1,5,2,4),(3,1,4,0)]'
     >>> HFK = pd_to_hfk(pd)
@@ -42,19 +41,9 @@ def pd_to_hfk(pd, int prime=2):
     (0, 0, 0)
     """
 
-    cdef char* hfk
-    cdef char* error
-    cdef errorstring
     if hasattr(pd, 'PD_code'):
         pd = 'PD' + repr(pd.PD_code())
-    PDCodeToHFK(pd.encode('ascii'), prime, &hfk, &error)
-    error_string = error.decode('ascii')
-    free(error)
-    hfk_string = hfk.decode('ascii')
-    free(hfk)
-    if error_string:
-        raise ValueError(error_string)
-    else:
-        result = {}
-        exec('result.update(%s)'%hfk_string, {'result':result})
-        return result
+
+    result = <object>PDCodeToHFK(pd.encode('ascii'), prime)
+    Py_DECREF(result)
+    return result

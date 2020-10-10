@@ -43,14 +43,7 @@ extern vector<Term> AfterMinAlt(vector<Term> Old);
 extern vector<Term> AfterCrossingAlt(vector<Term> Old, int Crossing);
 extern int Signature (PlanarDiagram Diag);
 
-// Get permssion to call strcpy on Windows without a warning.
-
-#define _CRT_SECURE_NO_WARNINGS
-
 // static helpers
-
-#define ITEM(stream, key, value)					\
-  stream << "  \"" << (key) << "\": " << (value) << "," << endl;
 
 static bool isPrime(int n) {
   if (n < 2) {
@@ -64,21 +57,8 @@ static bool isPrime(int n) {
   return true;
 }
 
-static void createCString(char **p, ostringstream& s) {
-  if (p) {
-    size_t bufferSize = s.str().length() + 1;
-    *p = (char *) malloc(bufferSize);
-#if defined(_MSC_VER)
-    strcpy_s(*p, bufferSize, s.str().c_str());
-#else
-    strncpy(*p, s.str().c_str(), bufferSize);
-
-#endif
-  }
-}
-
-static void readPDCode(char *pd, string& s) {
-  char *p;
+static void readPDCode(const char *pd, string& s) {
+  const char *p;
   for (p = pd; *p != 0; p++) {
     if (*p == 'D') {
       break;
@@ -87,18 +67,6 @@ static void readPDCode(char *pd, string& s) {
   for (; *p != 0; p++) {
     s.push_back(*p);
   }
-}
-
-static void KnotFloerRanksAsDict(const KnotFloerComplex& KFC, ostream& os)
-{
-  auto Map = KnotFloerRanks(KFC);
-
-  os << "{" << endl;
-  for(auto X: Map) {
-    os << "  (" << X.first.first << "," << X.first.second << "): ";
-    os << X.second << "," << endl;
-  }
-  os << "}" << endl;
 }
 
 static py::object MorseListAsEvents(const vector<int> &morseList)
@@ -133,7 +101,7 @@ static py::object MorseCodeAsEvents(const MorseCode &code)
 
 // Variant of KnotFloerForAlternatingKnots with a different output format.
 
-static void KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag, ostream& os) {
+static py::object KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag) {
   vector<int> Morse = Diag.GetSmallGirthMorseCode(200).GetMorseList();
   Bridge=1;
   Term G1; G1.Alexander = 0; G1.Coeff = 1; G1.Idem = 2;
@@ -176,102 +144,97 @@ static void KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag, ostream& os) 
   }
   int TotalRank=0;
   bool LSpaceKnot=true;
-  os << "{" << endl;
-  os << "  \"ranks\": {" << endl;
+
+  std::map<std::pair<int, int>, int> ranks;
+
   for(auto X: Range) {
     int a = X.first, b = abs(X.second);
-    os << "    (" << a/2 << "," << a/2-delta << "): " << b << "," << endl;
+    ranks[{a/2, a/2-delta}] = b;
     TotalRank += b;
     if (b != 1) {
       LSpaceKnot = false;
     }
   }
-  os << "  }," << endl;
   int MaxAlex = -(*Range.begin()).first;
   int LeadingCoeff = (*Range.begin()).second;
-  ITEM(os, "total_rank", TotalRank);
-  ITEM(os, "seifert_genus", MaxAlex/2);
-  ITEM(os, "fibered", (LeadingCoeff == 1 || LeadingCoeff == -1) ? "True" : "False"); 
-  ITEM(os, "L_space_knot", LSpaceKnot ? "True" : "False");
-  ITEM(os, "tau", delta);
-  ITEM(os, "nu", delta);
-  ITEM(os, "epsilon", (delta > 0) - (delta < 0)); 
-  os << "}" << endl;
+
+  return std::map<std::string, py::object>{
+      { "ranks", ranks },
+      { "total_rank", TotalRank },
+      { "seifert_genus", MaxAlex / 2 },
+      { "fibered", (LeadingCoeff == 1 || LeadingCoeff == -1) },
+      { "L_space_knot", LSpaceKnot },
+      { "tau", delta },
+      { "nu", delta },
+      { "epsilon", (delta > 0) - (delta < 0) } };
 }
 
 // The one and only function exported by this module.
 
-void PDCodeToHFK(
-  char *pd,
-  int prime,
-  char **hfk,
-  char **error)
+PyObject *PDCodeToHFK(const char *pd, int prime)
 {
-  ostringstream Error, HFK;
   string PDString;
-  bool inputIsInvalid = false;
 
-  if (error == NULL) {
-    throw runtime_error("PDCodeToMorseAndHFK: error must not be null.");
+  readPDCode(pd, PDString);
+  const PlanarDiagram diag = PlanarDiagram(PDString);
+
+  if (diag.NotValid()) {
+      py::RaiseValueError(
+          "The PD code does not describe a knot projection.");
+      return nullptr;
   }
+  
+  if (diag.R1Reducible()) {
+      py::RaiseValueError(
+          "The PD code describes a knot projection with a reducing "
+          "Reidemeister 1 move");
+      return nullptr;
+  }
+  
+  if (!isPrime(prime)) {
+      py::RaiseValueError(std::to_string(prime) + " is not prime");
+      return nullptr;
+  }
+
+  // Shouldn't we clear this before?
   MonomialStore.push_back(MonomialOne);
   MonomialMap.insert(make_pair(MonomialOne, 0));
-  readPDCode(pd, PDString);
-  PlanarDiagram Diag = PlanarDiagram(PDString);
-  if (!isPrime(prime)) {
-    Error << prime << " " << "is not a prime";
-    inputIsInvalid = true;
+
+  const MorseCode LastCheckBeforeComputation = diag.GetSmallGirthMorseCode(1);
+  if (LastCheckBeforeComputation.GetMorseList().empty()) {
+      py::RaiseValueError("Could not compute a small girth Morse code");
+      return nullptr;
   }
-  if (!inputIsInvalid && Diag.NotValid()) {
-    Error << "The PD code does not describe a knot projection.";
-    inputIsInvalid = true;
-  }
-  if (!inputIsInvalid && Diag.R1Reducible()) {
-    Error << "The PD code describes a knot projection with a reducing Reidemeister 1 move";
-    inputIsInvalid = true;
-  }
-  if (!inputIsInvalid) {
-    MorseCode LastCheckBeforeComputation = Diag.GetSmallGirthMorseCode(1);
-    if (LastCheckBeforeComputation.GetMorseList().size() == 0) {
-      Error << "Could not compute a small girth Morse code";
-      inputIsInvalid = true;
-    }
-  }
-  if (!inputIsInvalid) {
-    if(Diag.Alternating()) {
-      MorseCode M = Diag.GetSmallGirthMorseCode(10);
-      if (hfk) {
-	KnotFloerForAlternatingKnotsAsDict(Diag, HFK);
-      }
-    } else {
-      MorseCode M = Diag.GetSmallGirthMorseCode();
+
+  if(diag.Alternating()) {
+      py::object o = KnotFloerForAlternatingKnotsAsDict(diag);
+      return o.StealObject();
+  } else {
+      const MorseCode M = diag.GetSmallGirthMorseCode();
       if (M.GetGirth() > 2*MAXBRIDGE) {
-	Error << "Girth number exceeds " << 2*MAXBRIDGE;
+          py::RaiseValueError(
+              "Girth number exceeds " + std::to_string(2 * MAXBRIDGE));
+          return nullptr;
       } else {
-	if (hfk) {
-	  KnotFloerComplex KFC=ComputingKnotFloer(M, prime, false);
-	  HFK << "{" << endl;
-	  ITEM(HFK, "modulus", prime);
-	  HFK << "  \"ranks\": ";
-	  KnotFloerRanksAsDict(KFC, HFK);
-	  HFK << "," << endl;
-	  ITEM(HFK, "total_rank", KFC.Generators.size());
-	  ITEM(HFK, "seifert_genus", Genus(KFC));
-	  ITEM(HFK, "fibered", (Fibered(KFC) ? "True" : "False"));
-	  ITEM(HFK, "L_space_knot", (LSpaceKnot(KFC) ? "True" : "False"));
-	  ITEM(HFK, "tau", Tau(KFC));
-	  ITEM(HFK, "nu", Nu(KFC));
-	  ITEM(HFK, "epsilon", Epsilon(KFC));
-	  HFK << "}" << endl;
-	}
+	  KnotFloerComplex KFC = ComputingKnotFloer(M, prime, false);
+          py::object o(
+              std::map<std::string, py::object>{
+                  { "modulus", prime },
+                  { "ranks", KnotFloerRanks(KFC) },
+                  { "total_rank", KFC.Generators.size() },
+                  { "seifert_genus", Genus(KFC) },
+                  { "fibered", Fibered(KFC) },
+                  { "L_space_knot", LSpaceKnot(KFC) },
+                  { "tau", Tau(KFC) },
+                  { "nu", Nu(KFC) },
+                  { "epsilon", Epsilon(KFC) }});
+          
+          return o.StealObject();
       }
-    }
   }
-  createCString(error, Error);
-  createCString(hfk, HFK);
 }
 
-PyObject *PDCodeToMorse(char *pd)
+PyObject *PDCodeToMorse(const char *pd)
 {
     string PDString;
 
@@ -307,7 +270,7 @@ PyObject *PDCodeToMorse(char *pd)
     if (alternating) {
         if (morseCode.GetGirth() > 2 * MAXBRIDGE) {
             py::RaiseValueError(
-                "Girth number exceeds ...");
+                "Girth number exceeds " + std::to_string(2 * MAXBRIDGE));
             return nullptr;
         }
     }
