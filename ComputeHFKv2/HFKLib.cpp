@@ -70,18 +70,6 @@ static bool isPrime(int n) {
   return true;
 }
 
-static void readPDCode(const char *pd, string& s) {
-  const char *p;
-  for (p = pd; *p != 0; p++) {
-    if (*p == 'D') {
-      break;
-    }
-  }
-  for (; *p != 0; p++) {
-    s.push_back(*p);
-  }
-}
-
 static py::object MorseListAsEvents(const vector<int> &morseList)
 {
     std::vector<py::object> events;
@@ -186,10 +174,7 @@ static py::object KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag) {
 
 PyObject *PDCodeToHFK(const char *pd, int prime)
 {
-  string PDString;
-
-  readPDCode(pd, PDString);
-  const PlanarDiagram diag = PlanarDiagram(PDString);
+  const PlanarDiagram diag = PlanarDiagram(pd);
 
   if (diag.NotValid()) {
       py::RaiseValueError(
@@ -247,10 +232,7 @@ PyObject *PDCodeToHFK(const char *pd, int prime)
 
 PyObject *PDCodeToMorse(const char *pd)
 {
-    string PDString;
-
-    readPDCode(pd, PDString);
-    const PlanarDiagram diag = PlanarDiagram(PDString);
+    const PlanarDiagram diag = PlanarDiagram(pd);
 
     if (diag.NotValid()) {
         py::RaiseValueError(

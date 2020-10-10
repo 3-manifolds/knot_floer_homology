@@ -7,7 +7,12 @@ from cpython.ref cimport PyObject, Py_DECREF
 cdef extern from "HFKLib.h":
     cdef PyObject* PDCodeToMorse(const char *pd) except *
     cdef PyObject* PDCodeToHFK(const char *pd, int prime) except *
-                                   
+             
+def _get_pd_string(pd):
+    if hasattr(pd, 'PD_code'):
+        pd = repr(pd.PD_code())
+    return pd.encode('ascii')    
+                      
 def pd_to_morse(pd):
     """
     >>> pd = 'PD(5,3,0,2),(1,5,2,4),(3,1,4,0)]'
@@ -16,10 +21,7 @@ def pd_to_morse(pd):
     4
     """
 
-    if hasattr(pd, 'PD_code'):
-        pd = 'PD' + repr(pd.PD_code())
-
-    result = <object>PDCodeToMorse(pd.encode('ascii'))
+    result = <object>PDCodeToMorse(_get_pd_string(pd))
     Py_DECREF(result)
     return result
 
@@ -41,9 +43,6 @@ def pd_to_hfk(pd, int prime = 2):
     (0, 0, 0)
     """
 
-    if hasattr(pd, 'PD_code'):
-        pd = 'PD' + repr(pd.PD_code())
-
-    result = <object>PDCodeToHFK(pd.encode('ascii'), prime)
+    result = <object>PDCodeToHFK(_get_pd_string(pd), prime)
     Py_DECREF(result)
     return result
