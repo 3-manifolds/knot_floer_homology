@@ -2,10 +2,13 @@
 # cython: language_level = 3
 
 from libc.stdlib cimport free
-cdef extern from "HFKLib.h":
-    cdef void PDCodeToMorseAndHFK(char *pd, int prime, char** morse,
-                                     char **hfk, char **error)
+from cpython.ref cimport PyObject, Py_DECREF
 
+cdef extern from "HFKLib.h":
+    cdef void PDCodeToHFK(char *pd, int prime,
+                          char **hfk, char **error)
+    cdef PyObject* PDCodeToMorse(char *pd) except *
+                                   
 def pd_to_morse(pd):
     """
     >>> pd = 'PD(5,3,0,2),(1,5,2,4),(3,1,4,0)]'
@@ -13,20 +16,13 @@ def pd_to_morse(pd):
     >>> morse['girth']
     4
     """
-    cdef char* morse
-    cdef char* error
-    cdef errorstring, morsestring
+
     if hasattr(pd, 'PD_code'):
         pd = 'PD' + repr(pd.PD_code())
-    PDCodeToMorseAndHFK(pd.encode('ascii'), 2, &morse, NULL, &error)
-    error_string = error.decode('ascii')
-    free(error)
-    morse_string = morse.decode('ascii')
-    free(morse)
-    if error_string:
-        raise ValueError(error_string)
-    else:
-        return eval(morse_string)
+
+    result = <object>PDCodeToMorse(pd.encode('ascii'))
+    Py_DECREF(result)
+    return result
 
 def pd_to_hfk(pd, int prime=2):
     """
@@ -48,10 +44,10 @@ def pd_to_hfk(pd, int prime=2):
 
     cdef char* hfk
     cdef char* error
-    cdef errorstring, morsestring
+    cdef errorstring
     if hasattr(pd, 'PD_code'):
         pd = 'PD' + repr(pd.PD_code())
-    PDCodeToMorseAndHFK(pd.encode('ascii'), prime, NULL, &hfk, &error)
+    PDCodeToHFK(pd.encode('ascii'), prime, &hfk, &error)
     error_string = error.decode('ascii')
     free(error)
     hfk_string = hfk.decode('ascii')

@@ -1,5 +1,7 @@
 #include "Alg.h"
 #include "Diagrams.h"
+#include "HFKLib.h"
+#include "PyObjectLight.h"
 #include <vector>
 #include <map>
 #include <unordered_map>
@@ -13,6 +15,7 @@
 #include <stdlib.h>
 
 using namespace std;
+
 
 // Global variables used by functions called from this module.
 
@@ -98,34 +101,34 @@ static void KnotFloerRanksAsDict(const KnotFloerComplex& KFC, ostream& os)
   os << "}" << endl;
 }
 
-
-static void MorseCodeAsEvents(MorseCode& code, ostream& os)
+static py::object MorseListAsEvents(const vector<int> &morseList)
 {
-    int c;
-    vector<int> Morse = code.GetMorseList();
-    os << "{" << endl;
-    ITEM(os, "girth", code.GetGirth());
-    os << "  \"events\": [";
-    for (int i = 0; i < sizeAsInt(Morse); i++){
-	if (Morse[i] >999){
-	    c = Morse[++i];
-	    os << "('cup', " << c - 1 << ", " << c << ")," << endl;
-	}
-	else if (Morse[i] >-1000){
-	    c = Morse[i];
-	    if (c > 0){
-		os << "('cross', " << c - 1 << ", " << c << "), " << endl;
-	    }
-	    else{
-                c = abs(c);
-		os << "('cross', " << c << ", " << c - 1 << "), " << endl;
-	    }
-	}
-	else{
-	    os << "('cap', 0, 1)," << endl;
-	}
+    std::vector<py::object> events;
+
+    for (int i = 0; i < sizeAsInt(morseList); i++){
+        if (morseList[i] >999){
+            const int c = morseList[++i];
+            events.push_back(py::object("cup", c - 1, c));
+        } else if (morseList[i] >-1000){
+            const int c = morseList[i];
+            if (c > 0){
+                events.push_back(py::object("cross", c - 1, c));
+            } else {
+                events.push_back(py::object("cross", - c, - c - 1));
+            }
+        } else {
+            events.push_back(py::object("cap", 0, 1));
+        }
     }
-    os << "]}" << endl;
+
+    return events;
+}
+
+static py::object MorseCodeAsEvents(const MorseCode &code)
+{
+    return std::map<std::string, py::object>{
+        { "events", MorseListAsEvents(code.GetMorseList()) },
+        { "girth", code.GetGirth() } };
 }
 
 // Variant of KnotFloerForAlternatingKnots with a different output format.
@@ -198,14 +201,13 @@ static void KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag, ostream& os) 
 
 // The one and only function exported by this module.
 
-void PDCodeToMorseAndHFK(
+void PDCodeToHFK(
   char *pd,
   int prime,
-  char **morse,
   char **hfk,
   char **error)
 {
-  ostringstream Error, Morse, HFK;
+  ostringstream Error, HFK;
   string PDString;
   bool inputIsInvalid = false;
 
@@ -238,7 +240,6 @@ void PDCodeToMorseAndHFK(
   if (!inputIsInvalid) {
     if(Diag.Alternating()) {
       MorseCode M = Diag.GetSmallGirthMorseCode(10);
-      MorseCodeAsEvents(M, Morse);
       if (hfk) {
 	KnotFloerForAlternatingKnotsAsDict(Diag, HFK);
       }
@@ -247,7 +248,6 @@ void PDCodeToMorseAndHFK(
       if (M.GetGirth() > 2*MAXBRIDGE) {
 	Error << "Girth number exceeds " << 2*MAXBRIDGE;
       } else {
-	MorseCodeAsEvents(M, Morse);
 	if (hfk) {
 	  KnotFloerComplex KFC=ComputingKnotFloer(M, prime, false);
 	  HFK << "{" << endl;
@@ -268,6 +268,50 @@ void PDCodeToMorseAndHFK(
     }
   }
   createCString(error, Error);
-  createCString(morse, Morse);
   createCString(hfk, HFK);
+}
+
+PyObject *PDCodeToMorse(char *pd)
+{
+    string PDString;
+
+    readPDCode(pd, PDString);
+    const PlanarDiagram diag = PlanarDiagram(PDString);
+
+    if (diag.NotValid()) {
+        py::RaiseValueError(
+            "The PD code does not describe a knot projection.");
+        return nullptr;
+    }
+
+    if (diag.R1Reducible()) {
+        py::RaiseValueError(
+            "The PD code describes a knot projection with a reducing "
+            "Reidemeister 1 move");
+        return nullptr;
+    }
+
+    const bool alternating = diag.Alternating();
+
+    // Trying to mimick the behavior PDCodeToHFK...
+    const MorseCode morseCode = 
+         alternating ? diag.GetSmallGirthMorseCode(10)
+                     : diag.GetSmallGirthMorseCode();
+
+    if (morseCode.GetMorseList().empty()) {
+        py::RaiseValueError(
+            "Could not compute a small girth Morse code");
+        return nullptr;
+    }
+
+    if (alternating) {
+        if (morseCode.GetGirth() > 2 * MAXBRIDGE) {
+            py::RaiseValueError(
+                "Girth number exceeds ...");
+            return nullptr;
+        }
+    }
+
+    py::object o = MorseCodeAsEvents(morseCode);
+    return o.StealObject();
 }
