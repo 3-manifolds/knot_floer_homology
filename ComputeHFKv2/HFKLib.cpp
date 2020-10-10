@@ -29,7 +29,7 @@ vector<Arrow> ArrowList;
 vector<Arrow> NewArrowList;
 vector<Gen>   GeneratorList;
 vector<Gen>   NewGeneratorList;
-monomial MonomialOne={0};
+const monomial MonomialOne={0};
 
 // Unexported declarations from Alternating.cpp 
 
@@ -42,6 +42,19 @@ extern vector<Term> AfterMaxAlt(vector<Term> Old, int Position);
 extern vector<Term> AfterMinAlt(vector<Term> Old);
 extern vector<Term> AfterCrossingAlt(vector<Term> Old, int Crossing);
 extern int Signature (PlanarDiagram Diag);
+
+static std::once_flag _monomialStoreAndMapInitialized;
+
+static void _InitializeMonomialStoreAndMap()
+{
+    std::call_once(
+        _monomialStoreAndMapInitialized,
+        []() {
+            // Shouldn't we clear this before?
+            MonomialStore.push_back(MonomialOne);
+            MonomialMap.insert(make_pair(MonomialOne, 0));
+        });
+}
 
 // static helpers
 
@@ -196,9 +209,7 @@ PyObject *PDCodeToHFK(const char *pd, int prime)
       return nullptr;
   }
 
-  // Shouldn't we clear this before?
-  MonomialStore.push_back(MonomialOne);
-  MonomialMap.insert(make_pair(MonomialOne, 0));
+  _InitializeMonomialStoreAndMap();
 
   const MorseCode LastCheckBeforeComputation = diag.GetSmallGirthMorseCode(1);
   if (LastCheckBeforeComputation.GetMorseList().empty()) {

@@ -100,7 +100,7 @@ typedef uint32_t idem;
 typedef array<unsigned char, 2*MAXBRIDGE> monomial; 
 
   // Corresponds to 1 in F[U_1,...,U_{20}]:
-extern monomial MonomialOne; 
+extern const monomial MonomialOne; 
 
   // Each monomial that the program encounters has an integer identifier. 
   // Ex: 0 corresponds to MonomialOne. MonomialStore[0]=MonomialOne:
