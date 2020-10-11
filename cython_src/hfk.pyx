@@ -1,7 +1,6 @@
 # distutils: language = c++
 # cython: language_level = 3
 
-from libc.stdlib cimport free
 from cpython.ref cimport PyObject, Py_DECREF
 
 cdef extern from "PyWrapper.h":

@@ -5,15 +5,8 @@
 #include <vector>
 #include <map>
 #include <unordered_map>
-#include <set>
-#include <algorithm>
-#include <sstream>
-#include <iostream>
 #include <string>
 #include <mutex>
-#include <cstring>
-#include <stdio.h>
-#include <stdlib.h>
 
 using namespace std;
 
