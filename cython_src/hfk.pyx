@@ -4,7 +4,7 @@
 from libc.stdlib cimport free
 from cpython.ref cimport PyObject, Py_DECREF
 
-cdef extern from "HFKLib.h":
+cdef extern from "PyWrapping.h":
     cdef PyObject* PDCodeToMorse(const char *pd) except *
     cdef PyObject* PDCodeToHFK(const char *pd, int prime) except *
              

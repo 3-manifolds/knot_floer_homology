@@ -1,6 +1,6 @@
 #include "Alg.h"
 #include "Diagrams.h"
-#include "HFKLib.h"
+#include "PyWrapping.h"
 #include "PyObjectLight.h"
 #include <vector>
 #include <map>
