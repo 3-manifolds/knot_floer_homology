@@ -1,21 +1,29 @@
 #ifndef PY_OBJECT_LIGHT_H
 #define PY_OBJECT_LIGHT_H
 
+#include <Python.h>
+#include <string>
+#include <vector>
+#include <map>
+#include <utility>
+
 namespace py
 {
 
+// RAII object wrapping PyObject* that can be constructed
+// from various simple C++ objects and STL containers
 class object
 {
 public:
-    object(bool b)
+    object(const bool b)
       : _obj(PyBool_FromLong(b))
     { }
 
-    object(int i)
+    object(const int i)
       : _obj(PyLong_FromLong(i))
     { }
 
-    object(size_t i)
+    object(const size_t i)
       : _obj(PyLong_FromLong(i))
     { }
 
@@ -33,6 +41,7 @@ public:
         Py_INCREF(_obj);
     }
     
+    // Constructs python list
     template<typename T>
     object(const std::vector<T> &v)
       : _obj(PyList_New(v.size()))
@@ -43,6 +52,7 @@ public:
         }
     }
 
+    // Constructs python dict
     template<typename K, typename V>
     object(const std::map<K, V> &m)
       : _obj(PyDict_New())
@@ -54,12 +64,15 @@ public:
         }
     }
 
+    // Calling object(a, b, ...) with more than one argument
+    // constructs a python tuple.
     template<typename T, typename U, typename ...V>
     object(const T & t, const U & u, const V & ...v)
       : _obj(_tuple_helper(object(t), object(u), object(v)...))
     {
     }
 
+    // Constructs python tuple
     template<typename T, typename U>
     object(const std::pair<T, U> &p)
       : object(p.first, p.second)
@@ -70,10 +83,14 @@ public:
         Py_DECREF(_obj);
     }
 
+    // Returns underlying PyObject without transferring
+    // ownership.
     PyObject* GetObject() const {
         return _obj;
     }
 
+    // Returns underlying PyObject transferring ownership
+    // to callee.
     PyObject* StealObject() const {
         Py_INCREF(_obj); return _obj;
     }
