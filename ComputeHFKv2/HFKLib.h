@@ -1,1 +1,4 @@
-void PDCodeToMorseAndHFK(char *pd, int prime, char **morse, char **hfk, char **error);
+#include <Python.h>
+
+PyObject *PDCodeToMorse(const char *pd);
+PyObject *PDCodeToHFK(const char *pd, int prime);
