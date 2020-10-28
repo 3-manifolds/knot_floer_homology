@@ -1,4 +1,4 @@
-import spherogram
+#import spherogram
 from .hfk import pd_to_hfk
 
 sample_output = """\
