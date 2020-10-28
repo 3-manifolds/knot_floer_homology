@@ -26,9 +26,11 @@ jobs:
 
       - name: Build and test
         run: |
-          pip install .
+          python sdist bdist_wheel
+          pip install --no-index --find-links=./dist knot_floer_homology
           python -m knot_floer_homology.test
 
-      #- uses: actions/upload-artifact@v2
-      #  with:
-      #    path: ./wheelhouse/*.whl
+      - uses: actions/upload-artifact@v2
+        with:
+          path: ./dist/*.tar.gz
+          path: ./dist/*.whl
