@@ -21,12 +21,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          echo "MACOSX_DEPLOYMENT_TARGET=10.9" >> $GITHUB_ENV
           python -m pip install --upgrade pip
           pip install setuptools wheel cython
 
       - name: Build and test
         run: |
+          echo "MACOSX_DEPLOYMENT_TARGET=10.9" >> $GITHUB_ENV 
           python setup.py bdist_wheel
           pip install --no-index --find-links=./dist knot_floer_homology
           python -m knot_floer_homology.test
