@@ -26,7 +26,7 @@ jobs:
 
       - name: Build and test
         run: |
-          python sdist bdist_wheel
+          python setup.py bdist_wheel
           pip install --no-index --find-links=./dist knot_floer_homology
           python -m knot_floer_homology.test
 
