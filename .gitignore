@@ -3,4 +3,5 @@ build
 dist
 lib
 cython_src/*.c*
+*.egg-info
 

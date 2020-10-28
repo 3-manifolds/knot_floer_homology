@@ -16,7 +16,7 @@ else:
     extra_compile_args = ['-O3', '-std=c++11']
 
 hfk = Extension(
-    name = 'zs_hfk.hfk',
+    name = 'knot_floer_homology.hfk',
     sources = ['cython_src/hfk.cpp'] + cpp_sources,
     include_dirs = [cpp_dir],
     extra_compile_args = extra_compile_args
@@ -44,13 +44,13 @@ if 'clean' not in sys.argv:
         cythonize([file])
 
 setup(
-    name='zs_hfk',
+    name='knot_floer_homology',
     version=version,
-    author='Zoltán Szabó and Nathan M. Dunfield',
-    author_email='nathan@dunfield.info',
-    url='https://github/NathanDunfield/ZS_HFK',
-    packages=['zs_hfk'],
-    package_dir={'zs_hfk':'python_src'},
+    author='Zoltán Szabó, Marc Culler, Nathan M. Dunfield, and Matthias Goerner',
+    author_email='snappy-help@computop.org',
+    url='https://github/3-manifolds/knot_floer_homology',
+    packages=['knot_floer_homology'],
+    package_dir={'knot_floer_homology':'python_src'},
     ext_modules = [hfk],
     cmdclass = {
         'clean':HFKClean,

@@ -9,7 +9,7 @@ Installing
 To install and test, do the following::
 
   python3 -m pip install .
-  python3 -m zs_hfk.test
+  python3 -m knot_floer_homology.test
 
 You should see a result such as ``TestResults(failed=0, attempted=24)``.
 
@@ -18,9 +18,9 @@ Usage
 
 In Python, do::
 
-  >>> import zs_hfk, spherogram
+  >>> import knot_floer_homology, spherogram
   >>> L = spherogram.Link('K10n10')
-  >>> hfk = zs_hfk.HFK(L)
+  >>> hfk = knot_floer_homology.HFK(L)
   >>> for key in hfk: print('%s: %s'%(key, hfk[key]))
   ...
   modulus: 2
