@@ -96,7 +96,7 @@ static py::object MorseCodeAsEvents(const MorseCode &code)
 
 // Variant of KnotFloerForAlternatingKnots with a different output format.
 
-static py::object KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag) {
+static py::object KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag, int prime) {
   vector<int> Morse = Diag.GetSmallGirthMorseCode(200).GetMorseList();
   Bridge=1;
   Term G1; G1.Alexander = 0; G1.Coeff = 1; G1.Idem = 2;
@@ -154,6 +154,7 @@ static py::object KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag) {
   int LeadingCoeff = (*Range.begin()).second;
 
   return std::map<std::string, py::object>{
+      { "modulus", prime },
       { "ranks", ranks },
       { "total_rank", TotalRank },
       { "seifert_genus", MaxAlex / 2 },
@@ -197,7 +198,7 @@ PyObject *PDCodeToHFK(const char *pd, int prime)
   }
 
   if(diag.Alternating()) {
-      py::object o = KnotFloerForAlternatingKnotsAsDict(diag);
+      py::object o = KnotFloerForAlternatingKnotsAsDict(diag, prime);
       return o.StealObject();
   } else {
       const MorseCode M = diag.GetSmallGirthMorseCode();
