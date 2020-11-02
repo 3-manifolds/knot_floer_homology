@@ -14,7 +14,7 @@ def _get_pd_string(pd):
                       
 def pd_to_morse(pd):
     """
-    >>> pd = 'PD(5,3,0,2),(1,5,2,4),(3,1,4,0)]'
+    >>> pd = 'PD[(5,3,0,2),(1,5,2,4),(3,1,4,0)]'
     >>> morse = pd_to_morse(pd)
     >>> morse['girth']
     4
@@ -26,7 +26,7 @@ def pd_to_morse(pd):
 
 def pd_to_hfk(pd, int prime = 2):
     """
-    >>> pd = 'PD(5,3,0,2),(1,5,2,4),(3,1,4,0)]'
+    >>> pd = 'PD[(5,3,0,2),(1,5,2,4),(3,1,4,0)]'
     >>> HFK = pd_to_hfk(pd)
     >>> sorted(HFK['ranks'].keys())
     [(-1, -2), (0, -1), (1, 0)]

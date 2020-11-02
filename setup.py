@@ -51,6 +51,7 @@ setup(
     url='https://github/3-manifolds/knot_floer_homology',
     packages=['knot_floer_homology'],
     package_dir={'knot_floer_homology':'python_src'},
+    package_data={'knot_floer_homology':['HFK_data.json']},
     ext_modules = [hfk],
     cmdclass = {
         'clean':HFKClean,
