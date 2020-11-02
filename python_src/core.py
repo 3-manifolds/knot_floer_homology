@@ -25,10 +25,13 @@ Nu : 1
 Epsilon : 1
 """
 
+def yn_bool(val_str):
+    return {'yes':True, 'no':False}[val_str.lower()]
+
 props_computed = [('rank', 'Total rank', int),
                   ('genus', 'Seifert genus', int),
-                  ('fibered', 'Fibered', bool),
-                  ('L_space', 'L-space knot', bool),
+                  ('fibered', 'Fibered', yn_bool),
+                  ('L_space', 'L-space knot', yn_bool),
                   ('tau', 'Tau', int),
                   ('nu', 'Nu', int),
                   ('epsilon', 'Epsilon', int)]
@@ -62,12 +65,13 @@ def parse_raw_data(data):
     match = re.search("Alexander, Maslov bigradings :\n(.*)(Total rank.*)",
                       data, re.DOTALL)
     homology = dict()
-    for rank, grading in re.findall(r'(\d)+\s+(\(.*?,.*?\))', match[1]):
+    for rank, grading in re.findall(r'(\d+)+\s+(\(.*?,.*?\))', match[1]):
         homology[eval(grading)] = int(rank)
 
     props = dict()
     for key, name, value_type in props_computed:
-        props[key] = value_type(re.search(name + r'\s+:\s+(.*)', match[2])[1])
+        val = re.search(name + r'\s+:\s+(.*)', match[2])[1]
+        props[key] = value_type(val)
     return homology, props
 
 def HFK(knot):
