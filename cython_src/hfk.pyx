@@ -6,12 +6,14 @@ from cpython.ref cimport PyObject, Py_DECREF
 cdef extern from "PyWrapper.h":
     cdef PyObject* PDCodeToMorse(const char *pd) except *
     cdef PyObject* PDCodeToHFK(const char *pd, int prime) except *
-             
+
 def _get_pd_string(pd):
     if hasattr(pd, 'PD_code'):
         pd = repr(pd.PD_code())
-    return pd.encode('ascii')    
-                      
+    if isinstance(pd, list):
+        pd = repr(pd)
+    return pd.encode('ascii')
+
 def pd_to_morse(pd):
     """
     >>> pd = 'PD[(5,3,0,2),(1,5,2,4),(3,1,4,0)]'
@@ -24,7 +26,7 @@ def pd_to_morse(pd):
     Py_DECREF(result)
     return result
 
-def pd_to_hfk(pd, int prime = 2):
+def pd_to_hfk(pd_code, int prime = 2):
     """
     >>> pd = 'PD[(5,3,0,2),(1,5,2,4),(3,1,4,0)]'
     >>> HFK = pd_to_hfk(pd)
@@ -40,8 +42,15 @@ def pd_to_hfk(pd, int prime = 2):
     17
     >>> HFK['tau'], HFK['nu'], HFK['epsilon']
     (0, 0, 0)
-    """
 
-    result = <object>PDCodeToHFK(_get_pd_string(pd), prime)
+    >>> pd_code = [(2,0,3,15), (0,6,1,5), (6,2,7,1), (3,11,4,10),
+    ...            (11,5,12,4), (7,13,8,12), (13,9,14,8), (9,15,10,14)]
+    >>> HFK = pd_to_hfk(pd_code)
+    >>> sum(HFK['ranks'].values()) == HFK['total_rank']
+    True
+    >>> HFK['tau'], HFK['nu'], HFK['epsilon']
+    (3, 3, 1)
+    """
+    result = <object>PDCodeToHFK(_get_pd_string(pd_code), prime)
     Py_DECREF(result)
     return result

@@ -20,7 +20,7 @@ In Python, do::
 
   >>> import knot_floer_homology, spherogram
   >>> L = spherogram.Link('K10n10')
-  >>> hfk = knot_floer_homology.HFK(L)
+  >>> hfk = knot_floer_homology.pd_to_hfk(L)
   >>> for key in hfk: print('%s: %s'%(key, hfk[key]))
   ...
   modulus: 2

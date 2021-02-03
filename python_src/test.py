@@ -1,4 +1,3 @@
-from . import core
 from . import hfk
 import os
 import json
@@ -27,5 +26,5 @@ def matches_saved_HFK_results():
 
 if __name__ == '__main__':
     import doctest
-    print(doctest.testmod(hfk))
-    print(doctest.testmod())
+    print('module tests:', doctest.testmod(hfk))
+    print('regression tests:', doctest.testmod())
