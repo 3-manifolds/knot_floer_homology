@@ -32,7 +32,7 @@ In Python, do::
    'tau': 0,
    'total_rank': 9}
 
-It also accepts `Spherogram`_ as input::
+It also accepts `Spherogram`_ knots as input::
 
   >>> import spherogram
   >>> L = spherogram.Link('K10n10')
