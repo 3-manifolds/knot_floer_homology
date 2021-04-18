@@ -190,29 +190,24 @@ void KnotFloerForAlternatingKnots(PlanarDiagram Diag, ostream & os)
     else os<<"Fibered : No\n";       
     if(LSpaceKnot) os<<"L-space knot : Yes\n";
     else os<<"L-space knot : No\n";
-    os<<"Tau : "<<delta<<endl;  
-    os<<"Nu : "<<delta<<endl;
-    int epsilon=0; if(delta >0) epsilon=1; if(delta<0) epsilon=-1;
+    int epsilon, tau, nu;
+    tau = delta;
+    if(delta > 0){
+	epsilon = 1;
+	nu = delta;
+    }
+    if(delta == 0){
+	epsilon = 0;
+	nu = 0;
+    }
+    if(delta < 0){
+	epsilon = -1;
+	nu = delta + 1;
+    }
+    os<<"Tau : "<<tau<<endl;
+    os<<"Nu : "<<nu<<endl;
     os<<"Epsilon : "<<epsilon<<endl;
 }
-
-
-
-
-
-
-
-
-
- 
-
- 
-
-
- 
- 
-
-
 
 
 

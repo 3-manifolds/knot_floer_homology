@@ -153,6 +153,21 @@ static py::object KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag, int pri
   int MaxAlex = -(*Range.begin()).first;
   int LeadingCoeff = (*Range.begin()).second;
 
+  int epsilon, tau, nu;
+  tau = delta;
+  if(delta > 0){
+      epsilon = 1;
+      nu = delta;
+  }
+  if(delta == 0){
+      epsilon = 0;
+      nu = 0;
+  }
+  if(delta < 0){
+      epsilon = -1;
+      nu = delta + 1;
+  }
+
   return std::map<std::string, py::object>{
       { "modulus", prime },
       { "ranks", ranks },
@@ -160,9 +175,9 @@ static py::object KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag, int pri
       { "seifert_genus", MaxAlex / 2 },
       { "fibered", (LeadingCoeff == 1 || LeadingCoeff == -1) },
       { "L_space_knot", LSpaceKnot },
-      { "tau", delta },
-      { "nu", delta },
-      { "epsilon", (delta > 0) - (delta < 0) } };
+      { "tau", tau },
+      { "nu", nu },
+      { "epsilon", epsilon } };
 }
 
 // The one and only function exported by this module.
