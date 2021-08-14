@@ -27,6 +27,8 @@ struct KnotFloerComplex
 
   //Computes U\cdot V=0 version from a MorseList over F_{Prime}
 KnotFloerComplex ComputingKnotFloer(MorseCode, int Prime, bool verbose=true);
+
+
   
 int Genus(const KnotFloerComplex &);
 
@@ -42,6 +44,13 @@ int Epsilon(const KnotFloerComplex &);
 
   //computes bigraded ranks:
 map<pair<int, int>,int > KnotFloerRanks(const KnotFloerComplex &);
+
+  //returns info on generators:
+map<int, pair<int,int>> KnotFloerGenerators(const KnotFloerComplex &);
+
+  //returns info on differentials:
+map<int, pair<pair<int,int>,int>> KnotFloerDifferentials(const KnotFloerComplex & KFC);
+
 
   //prints bigraded ranks:
 void ReportKnotFloerRanks(const KnotFloerComplex &, ostream & os); 

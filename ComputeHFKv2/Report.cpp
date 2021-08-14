@@ -18,6 +18,25 @@ map<pair<int,int>, int> KnotFloerRanks(const KnotFloerComplex & KFC)
     return Map;
 }
 
+map<int, pair<int,int>> KnotFloerGenerators(const KnotFloerComplex & KFC)
+{
+    map<int, pair<int,int>> Map;
+    for(KnotFloerGen G: KFC.Generators)
+	Map[G.Name] = make_pair(G.Alexander, G.Maslov);
+    return Map;
+}
+
+map<int, pair<pair<int,int>,int>> KnotFloerDifferentials(const KnotFloerComplex & KFC)
+{
+    map<int, pair<pair<int,int>,int>> Map;
+    int i = 0;
+    for(ChainArrow A: KFC.Differential){
+	Map[i] = make_pair(make_pair(A.StartingGen, A.EndingGen), A.Coeff);
+	i++;
+    }
+    return Map;
+}
+
 void ReportKnotFloerRanks(const KnotFloerComplex & KFC, ostream & os)
 {   auto Map=KnotFloerRanks(KFC);        
     os<<"Ranks in Alexander, Maslov bigradings :"<<endl;

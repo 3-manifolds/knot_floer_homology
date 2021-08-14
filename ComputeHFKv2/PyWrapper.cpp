@@ -233,7 +233,9 @@ PyObject *PDCodeToHFK(const char *pd, int prime)
                   { "L_space_knot", LSpaceKnot(KFC) },
                   { "tau", Tau(KFC) },
                   { "nu", Nu(KFC) },
-                  { "epsilon", Epsilon(KFC) }});
+		  { "epsilon", Epsilon(KFC) },
+		  { "generators", KnotFloerGenerators(KFC) },
+		  { "differentials", KnotFloerDifferentials(KFC)}});
           
           return o.StealObject();
       }
