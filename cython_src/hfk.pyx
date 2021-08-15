@@ -2,10 +2,11 @@
 # cython: language_level = 3
 
 from cpython.ref cimport PyObject, Py_DECREF
+from libcpp cimport bool
 
 cdef extern from "PyWrapper.h":
     cdef PyObject* PDCodeToMorse(const char *pd) except *
-    cdef PyObject* PDCodeToHFK(const char *pd, int prime) except *
+    cdef PyObject* PDCodeToHFK(const char *pd, int prime, bool complex) except *
 
 def _get_pd_string(pd):
     if hasattr(pd, 'PD_code'):
@@ -26,7 +27,7 @@ def pd_to_morse(pd):
     Py_DECREF(result)
     return result
 
-def pd_to_hfk(pd_code, int prime = 2):
+def pd_to_hfk(pd_code, int prime = 2, bool complex = False):
     """
     >>> pd = 'PD[(5,3,0,2),(1,5,2,4),(3,1,4,0)]'
     >>> HFK = pd_to_hfk(pd)
@@ -51,6 +52,6 @@ def pd_to_hfk(pd_code, int prime = 2):
     >>> HFK['tau'], HFK['nu'], HFK['epsilon']
     (3, 3, 1)
     """
-    result = <object>PDCodeToHFK(_get_pd_string(pd_code), prime)
+    result = <object>PDCodeToHFK(_get_pd_string(pd_code), prime, complex)
     Py_DECREF(result)
     return result

@@ -49,7 +49,7 @@ map<pair<int, int>,int > KnotFloerRanks(const KnotFloerComplex &);
 map<int, pair<int,int>> KnotFloerGenerators(const KnotFloerComplex &);
 
   //returns info on differentials:
-map<int, pair<pair<int,int>,int>> KnotFloerDifferentials(const KnotFloerComplex & KFC);
+map<pair<int,int>, int> KnotFloerDifferentials(const KnotFloerComplex & KFC);
 
 
   //prints bigraded ranks:

@@ -182,7 +182,7 @@ static py::object KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag, int pri
 
 // The one and only function exported by this module.
 
-PyObject *PDCodeToHFK(const char *pd, int prime)
+PyObject *PDCodeToHFK(const char *pd, int prime, bool complex)
 {
   const PlanarDiagram diag = PlanarDiagram(pd);
 
@@ -213,6 +213,11 @@ PyObject *PDCodeToHFK(const char *pd, int prime)
   }
 
   if(diag.Alternating()) {
+      if (complex){
+          py::RaiseValueError(
+              "No complex computed for alternating knots.");
+          return nullptr;
+      }
       py::object o = KnotFloerForAlternatingKnotsAsDict(diag, prime);
       return o.StealObject();
   } else {
@@ -222,22 +227,37 @@ PyObject *PDCodeToHFK(const char *pd, int prime)
               "Girth number exceeds " + std::to_string(2 * MAXBRIDGE));
           return nullptr;
       } else {
-	  KnotFloerComplex KFC = ComputingKnotFloer(M, prime, false);
-          py::object o(
-              std::map<std::string, py::object>{
-                  { "modulus", prime },
-                  { "ranks", KnotFloerRanks(KFC) },
-                  { "total_rank", KFC.Generators.size() },
-                  { "seifert_genus", Genus(KFC) },
-                  { "fibered", Fibered(KFC) },
-                  { "L_space_knot", LSpaceKnot(KFC) },
-                  { "tau", Tau(KFC) },
-                  { "nu", Nu(KFC) },
-		  { "epsilon", Epsilon(KFC) },
-		  { "generators", KnotFloerGenerators(KFC) },
-		  { "differentials", KnotFloerDifferentials(KFC)}});
-          
-          return o.StealObject();
+          KnotFloerComplex KFC = ComputingKnotFloer(M, prime, false);
+          if (complex){
+              py::object o(
+                  std::map<std::string, py::object>{
+                      { "modulus", prime },
+                      { "ranks", KnotFloerRanks(KFC) },
+                      { "total_rank", KFC.Generators.size() },
+                      { "seifert_genus", Genus(KFC) },
+                      { "fibered", Fibered(KFC) },
+                      { "L_space_knot", LSpaceKnot(KFC) },
+                      { "tau", Tau(KFC) },
+                      { "nu", Nu(KFC) },
+                      { "epsilon", Epsilon(KFC) },
+                      { "generators", KnotFloerGenerators(KFC) },
+                      { "differentials", KnotFloerDifferentials(KFC)}});
+              return o.StealObject();
+          }
+          else{
+              py::object o(
+                  std::map<std::string, py::object>{
+                      { "modulus", prime },
+                      { "ranks", KnotFloerRanks(KFC) },
+                      { "total_rank", KFC.Generators.size() },
+                      { "seifert_genus", Genus(KFC) },
+                      { "fibered", Fibered(KFC) },
+                      { "L_space_knot", LSpaceKnot(KFC) },
+                      { "tau", Tau(KFC) },
+                      { "nu", Nu(KFC) },
+                      { "epsilon", Epsilon(KFC) }});
+              return o.StealObject();
+          }
       }
   }
 }

@@ -26,13 +26,11 @@ map<int, pair<int,int>> KnotFloerGenerators(const KnotFloerComplex & KFC)
     return Map;
 }
 
-map<int, pair<pair<int,int>,int>> KnotFloerDifferentials(const KnotFloerComplex & KFC)
+map<pair<int,int>, int> KnotFloerDifferentials(const KnotFloerComplex & KFC)
 {
-    map<int, pair<pair<int,int>,int>> Map;
-    int i = 0;
+    map<pair<int,int>, int> Map;
     for(ChainArrow A: KFC.Differential){
-	Map[i] = make_pair(make_pair(A.StartingGen, A.EndingGen), A.Coeff);
-	i++;
+	Map[make_pair(A.StartingGen, A.EndingGen)] += A.Coeff;
     }
     return Map;
 }
