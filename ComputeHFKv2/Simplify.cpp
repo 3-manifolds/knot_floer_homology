@@ -86,7 +86,8 @@ void Simplify()
                 Q.StartingGen=a; 
                 Q.EndingGen=b;
                 Q.MonomialIndex=m;
-                Q.Coeff=((A.Coeff)*(B.Coeff)*(Inverse)) % Modulus; 
+                // Do in two steps to avoid overflow:
+                Q.Coeff=(((A.Coeff*B.Coeff) % Modulus) * Inverse) % Modulus;
                 // Either  Q existed before (with perhaps different 
                 //coefficient) or Q is new. We add or update:
 	        int s=0; int f=sizeAsInt(Maps1[a]);

@@ -198,6 +198,13 @@ PyObject *PDCodeToHFK(const char *pd, int prime, bool complex)
           "Reidemeister 1 move");
       return nullptr;
   }
+
+  if (prime > 32768) {
+            py::RaiseValueError("The prime " + std::to_string(prime) +
+                                " is greater than 2^15.");
+      return nullptr;
+  }
+
   
   if (!isPrime(prime)) {
       py::RaiseValueError(std::to_string(prime) + " is not prime");
@@ -212,7 +219,7 @@ PyObject *PDCodeToHFK(const char *pd, int prime, bool complex)
       return nullptr;
   }
 
-  if(diag.Alternating()) {
+  if(diag.Alternating() && !complex) {
       if (complex){
           py::RaiseValueError(
               "No complex computed for alternating knots.");
