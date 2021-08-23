@@ -40,7 +40,7 @@ It also accepts `Spherogram`_ knots as input::
   >>> ans['seifert_genus']
   3
 
-It can also return the simplified “UV = 0” knot Floer chain complex,
+It can also return the simplified UV = 0 knot Floer chain complex,
 do::
 
   >>> help(knot_floer_homology.pd_to_hfk)

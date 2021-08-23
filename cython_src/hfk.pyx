@@ -53,7 +53,7 @@ def pd_to_hfk(pd_code, int prime=2, bool complex=False):
     (3, 3, 1)
 
     If the parameter `complex` is set to True, then the simplified
-    “UV = 0” knot Floer chain complex is returned. This complex is
+    "UV = 0" knot Floer chain complex is returned. This complex is
     computed over the ring F[U,V]/(UV = 0), where F is the integers
     mod the chosen prime; this corresponds to only the horizontal and
     vertical arrows in the full knot Floer complex. The complex is
