@@ -220,11 +220,6 @@ PyObject *PDCodeToHFK(const char *pd, int prime, bool complex)
   }
 
   if(diag.Alternating() && !complex) {
-      if (complex){
-          py::RaiseValueError(
-              "No complex computed for alternating knots.");
-          return nullptr;
-      }
       py::object o = KnotFloerForAlternatingKnotsAsDict(diag, prime);
       return o.StealObject();
   } else {
