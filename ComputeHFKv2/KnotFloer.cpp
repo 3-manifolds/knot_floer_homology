@@ -6,6 +6,7 @@
 #include<iostream>
 #include<fstream>
 #include<string>
+#include<Python.h>
 
 using namespace std;
 
@@ -52,8 +53,13 @@ KnotFloerComplex  ComputingKnotFloer(MorseCode Morse, int Prime, bool verbose){
          else if (MorseList[i]==-1000) AfterMin(); 
          else  AfterCrossing(MorseList[i]);
          
-         Simplify(); 
-	}
+         Simplify();
+         if (PyErr_CheckSignals()) {
+           KnotFloerComplex KFC;
+           KFC.Prime = 0;
+           return KFC;
+	 }
+       }
     if (verbose) {
       cout<<endl;//(GeneratorList,ArrowList) represents a D-Module over B(2,1);
     }

@@ -116,6 +116,12 @@ inline void RaiseValueError(const std::string &msg)
     RaiseValueError(msg.c_str());
 }
 
+inline void RaiseRuntimeError(const char * msg)
+{
+    Py_INCREF(PyExc_RuntimeError);
+    PyErr_SetString(PyExc_RuntimeError, msg);
+}
+
 }
 
 #endif

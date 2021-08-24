@@ -230,6 +230,10 @@ PyObject *PDCodeToHFK(const char *pd, int prime, bool complex)
           return nullptr;
       } else {
           KnotFloerComplex KFC = ComputingKnotFloer(M, prime, false);
+	  if (KFC.Prime == 0) {
+	    py::RaiseRuntimeError("Interrupted!");
+	    return nullptr;
+	  }
           if (complex){
               py::object o(
                   std::map<std::string, py::object>{
