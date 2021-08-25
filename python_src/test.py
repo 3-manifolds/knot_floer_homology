@@ -1,6 +1,7 @@
 from . import hfk
 import os
 import json
+import sys
 
 def regression_data():
     data_file = os.path.join(os.path.dirname(__file__), 'HFK_data.json')
@@ -26,5 +27,9 @@ def matches_saved_HFK_results():
 
 if __name__ == '__main__':
     import doctest
-    print('module tests:', doctest.testmod(hfk))
-    print('regression tests:', doctest.testmod())
+    mod_tests = doctest.testmod(hfk)
+    print('module tests:', mod_tests)
+    reg_tests = doctest.testmod()
+    print('regression tests:', reg_tests)
+    if mod_tests.failed + reg_tests.failed > 0:
+        sys.exit(1)
