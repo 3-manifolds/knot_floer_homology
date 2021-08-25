@@ -78,8 +78,8 @@ def pd_to_hfk(pd_code, int prime=2, bool complex=False):
     >>> gens, diff = data['generators'], data['differentials']
     >>> vert = {(i,j):diff[i, j] for i, j in diff
     ...                          if gens[i][1] == gens[j][1] + 1}
-    >>> vert
-    {(2, 0): 1, (3, 4): 1}
+    >>> len(vert)
+    2
     """
     result = <object>PDCodeToHFK(_get_pd_string(pd_code), prime, complex)
     Py_DECREF(result)
