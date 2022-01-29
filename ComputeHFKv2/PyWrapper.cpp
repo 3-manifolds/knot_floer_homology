@@ -224,6 +224,11 @@ PyObject *PDCodeToHFK(const char *pd, int prime, bool complex)
       return o.StealObject();
   } else {
       const MorseCode M = diag.GetSmallGirthMorseCode();
+      if (M.GetMorseList().empty()) {
+          M = LastCheckBeforeComputation;
+          //py::RaiseValueError("Could not compute a small girth Morse code");
+          //return nullptr;
+      }
       if (M.GetGirth() > 2*MAXBRIDGE) {
           py::RaiseValueError(
               "Girth number exceeds " + std::to_string(2 * MAXBRIDGE));
