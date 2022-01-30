@@ -223,14 +223,10 @@ PyObject *PDCodeToHFK(const char *pd, int prime, bool complex)
       py::object o = KnotFloerForAlternatingKnotsAsDict(diag, prime);
       return o.StealObject();
   } else {
-      MorseCode M = diag.GetSmallGirthMorseCode();
+      const MorseCode M = diag.GetSmallGirthMorseCode();
       if (M.GetMorseList().empty()) {
-          M = LastCheckBeforeComputation;
-          //Sometimes a bug in diag.GetSmallGirthMorseCode()
-          //causes it to return an empty list here, but it
-          //returned a (likely non-optimal but valid) MorseCode
-          //above. Rather than giving up, we might as well try
-          //using the MorseCode obtained before.
+	  py::RaiseValueError("Could not compute a small girth Morse code");
+	  return nullptr;
       }
       if (M.GetGirth() > 2*MAXBRIDGE) {
           py::RaiseValueError(
