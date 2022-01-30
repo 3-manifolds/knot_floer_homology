@@ -114,7 +114,6 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
          temp[1]=PD[4*FirstC+ ((Shift+1)%4)]; 
          temp[2]=PD[4*FirstC+ ((Shift+2)%4)];
          temp[3]=PD[4*FirstC+ ((Shift+3)%4)];
-         int lastStrand=temp[3]; //if temp={1,8,2,9} then 9 will remain to be the last coordinate while temp grows and shrinks
          
          if(temp[2]% (2*x) == (temp[0]+1)%(2*x)) TempMorseList[0]=1000; else TempMorseList[0]=1001;
          TempMorseList[1]=1;
@@ -129,9 +128,6 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
             int MaxCon=1; 
             for(int j=0;j<x; j++)
 	       {if(CrossingUsed[j]==1) continue; 
-		 if(A<x-2 &&  (PD[4*j]==lastStrand || PD[4*j+1]==lastStrand 
-		 	       || PD[4*j+2]==lastStrand || PD[4*j+3]==lastStrand ) )
-		             continue; //not gluing to the last strand
 		  
 		int Con=0; vector<int> Where;
                 for(int k=0;k<4;k++)
