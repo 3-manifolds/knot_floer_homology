@@ -95,7 +95,6 @@ PlanarDiagram::PlanarDiagram(const string &S){
 }
 
 MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
-  srand(0);  // set random seed to get consistent behavior across different calls
   const vector<int> &PD=ListOfTuples;
   int x=sizeAsInt(PD)/4;
   int SmallestGirth=10000; 
