@@ -217,12 +217,6 @@ PyObject *PDCodeToHFK(const char *pd, int prime, bool complex)
 
   _InitializeMonomialStoreAndMap();
 
-  const MorseCode LastCheckBeforeComputation = diag.GetSmallGirthMorseCode(1);
-  if (LastCheckBeforeComputation.GetMorseList().empty()) {
-      py::RaiseValueError("Could not compute a small girth Morse code");
-      return nullptr;
-  }
-
   if(diag.Alternating() && !complex) {
       py::object o = KnotFloerForAlternatingKnotsAsDict(diag, prime);
       return o.StealObject();

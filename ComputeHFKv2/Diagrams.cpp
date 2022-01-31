@@ -140,8 +140,7 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
 	       }  
 	    int aa=sizeAsInt(MostConnected);
              if (aa == 0) { //problem with planar diagram
-               vector<int> Empty =vector<int>();
-	       return MorseCode(Empty, -1);
+                continue;
 	     }     
              int a1=rand()% aa;
              int NextC =MostConnected[a1]; 
@@ -204,6 +203,11 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
 	 if(B < SmallestGirth || (B==SmallestGirth  &&  TempComplexity< Complexity ))//saving the impoved MorseList:
            {SmallestGirth=B;  Complexity=TempComplexity; MorseList=TempMorseList;}
 	}
+
+    if(MorseList.empty())
+      {vector<int> Empty =vector<int>();
+       return MorseCode(Empty, -1);
+      }
         
     return MorseCode(MorseList, SmallestGirth);
 }
