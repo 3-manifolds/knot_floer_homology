@@ -329,8 +329,6 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
       PD[4 * FirstCrossing + (Shift + 3) % 4]
     };
     
-    for (int x : Edges) { cout << (x - 1) << " "; } cout << endl;
-    
     /* Initialize the Morse list with two maxima and the first crossing. We
      * also need the orientation of the maxima. The orientation of the knot
      * follows the edge numbering of the planar diagram, in increasing order:
