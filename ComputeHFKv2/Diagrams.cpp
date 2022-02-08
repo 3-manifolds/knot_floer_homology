@@ -95,6 +95,11 @@ PlanarDiagram::PlanarDiagram(const string &S){
     }
 }
 
+/* Auxiliary function for PlanarDiagram::GetSmallGirthMorseCode.
+ * 
+ * Find the crossings, not yet added to the Morse list, that share a maximal
+ * number of edges with the bottom edges of the upper knot diagram.
+ */
 inline pair< int, vector< int > > get_max_connections(
   const vector< int >& pd,
   const vector< bool >& added,
@@ -103,14 +108,17 @@ inline pair< int, vector< int > > get_max_connections(
   vector< int > max_connected_crossings;
   int max_connections = 1;
   
-  //cout << "[Da] current edges " << edges << endl;
   // Find maximally connected crossings
   for (int crossing = 0; crossing < (sizeAsInt(pd) / 4); ++crossing) {
     if (added[crossing]) {
       continue;
     }
     
-    // static variables for memory optimization
+    /* Vectors of positions of edges that belong to the bottom edges of the
+     * upper knot diagram and the current crossing.
+     * 
+     * These vectors are static for memory optimization.
+     */
     static vector< int > pos_in_edges;
     static vector< int > pos_in_crossing;
     pos_in_edges.clear();
@@ -129,19 +137,14 @@ inline pair< int, vector< int > > get_max_connections(
     }
     int connections = sizeAsInt(pos_in_edges);
     
-    if (connections == 0) continue;
+    if (connections == 0) goto crossing_loop_end;  // i.e. continue
     else if (pos_in_edges.back() - pos_in_edges.front() > connections) {
       continue;  // crossing attaches to temp in disjoint intervals
     }
     
-    //std::cout << "pos in temp " << pos_in_edges << " pos in crossing " << pos_in_crossing << std::endl;
-    
     for (int i = 0; i + 1 < connections; ++i) {
       if ((4 - pos_in_crossing[i + 1] + pos_in_crossing[i]) % 4 != 1) {
-        // crossing does not attach counter-clockwise
-        //std::cout << "[Da] data " << pos_in_crossing[i] << " " << pos_in_crossing[i + 1] << std::endl;
-        //std::cout << "[Da] not counterclockwise " << crossing_edges << std::endl;
-        goto crossing_loop_end;  // exit loop + jump using goto
+        goto crossing_loop_end;  // crossing does not attach counter-clockwise
       }
     }
     
@@ -159,6 +162,15 @@ inline pair< int, vector< int > > get_max_connections(
   return make_pair(max_connections, max_connected_crossings);
 }
 
+/* Auxiliary function for PlanarDiagram::GetSmallGirthMorseCode.
+ * 
+ * Extend the Morse list based on the new crossing and its connectivity.
+ * Update the bottom edges of the upper knot diagram and the cost of the
+ * current Morse list.
+ * 
+ * Depending on the connectivity, we may need to add local extrema. This is
+ * detailed below.
+ */
 
 inline void extend_Morse_list(
   vector< int >& morse_list,
@@ -166,11 +178,14 @@ inline void extend_Morse_list(
   long long& cost,
   const vector< int >& pd,
   const int next_crossing,
-  const int max_connections,
+  const int connectivity,
   const int n_added
 ) {
+  /* Find the position of the first bottom edge that connects to the next
+   * crossing, as well as the position of the corresponding edge in the part
+   * of the planar diagram with the next crossing's edges.
+   */
   const vector< int > crossing_edges(pd.begin() + 4 * next_crossing, pd.begin() + 4 * (next_crossing + 1));
-  //cout << "[Da] next crossing " << next_crossing << ": " << crossing_edges << endl;
   int first_pos = 0;
   while (
     first_pos < sizeAsInt(edges)
@@ -186,17 +201,19 @@ inline void extend_Morse_list(
     ++crossing_first_pos;
   }
   
-  // Compute cost of adding Morse event
+  /* Compute cost of adding the crossing, in particular the cost of adding
+   * local minima.
+   */
   long long added_cost = n_added * sizeAsInt(edges) * sizeAsInt(edges);
-  if (max_connections == 3) {
+  if (connectivity == 3) {
     cost += (first_pos + 1) * added_cost;
   }
-  else if (max_connections == 4) {
+  else if (connectivity == 4) {
     cost += (2 * first_pos + 1) * added_cost;
   }
   
   // Add Morse events according to the new crossing
-  /* If max_connections == 1, add a maximum and a crossing as follows:
+  /* If connectivity == 1, add a maximum and a crossing as follows:
    * 
    *     | |   _   |
    *     |  \ / \  |
@@ -204,7 +221,7 @@ inline void extend_Morse_list(
    *     |  | |  | |
    * 
    */
-  if (max_connections == 1) {
+  if (connectivity == 1) {
     int left_pos = (crossing_first_pos + 1) % 4;
     int right_pos = (crossing_first_pos + 3) % 4;
     if ((crossing_edges[right_pos] - crossing_edges[left_pos]) % (sizeAsInt(pd) / 2) == 1) {
@@ -222,15 +239,15 @@ inline void extend_Morse_list(
     }
   }
   
-  // If max_connections == 2, nothing complicated happens.
-  else if (max_connections == 2 and crossing_first_pos % 2 == 0) {
+  // If connectivity == 2, nothing complicated happens.
+  else if (connectivity == 2 and crossing_first_pos % 2 == 0) {
     morse_list.push_back(first_pos + 1);
   }
-  else if (max_connections == 2) {
+  else if (connectivity == 2) {
     morse_list.push_back(-first_pos - 1);
   }
   
-  /* If max_connections >= 3, then add a crossing and a minimum, and move
+  /* If connectivity >= 3, then add a crossing and a minimum, and move
    * the minimum to the left:
    * 
    *     | |  | | | |
@@ -241,9 +258,9 @@ inline void extend_Morse_list(
    *     /  X  |  | |
    *     \_/ | |  | |
    * 
-   * If max_connections == 4, then we need to do this process twice.
+   * If connectivity == 4, then we need to do this process twice.
    */
-  else if (max_connections >= 3) {
+  else if (connectivity >= 3) {
     if (crossing_first_pos % 2 == 0) {
       morse_list.push_back(-first_pos - 2);  // negative crossing
     }
@@ -256,8 +273,8 @@ inline void extend_Morse_list(
     }
     morse_list.push_back(-1000);  // minimum
     
-    // repeat if max_connections == 4
-    if (max_connections == 4) {
+    // repeat if connectivity == 4
+    if (connectivity == 4) {
       for (int i = first_pos; i > 0; --i) {
         morse_list.push_back(i);
         morse_list.push_back(i + 1);
@@ -268,10 +285,10 @@ inline void extend_Morse_list(
   
     
   // Update edge list
-  for (int i = 0; i < max_connections; ++i) {
-    edges.erase(edges.begin() + first_pos);  // erase crossing_edges[(4 - i crossing_first_pos) % 4]
+  for (int i = 0; i < connectivity; ++i) {
+    edges.erase(edges.begin() + first_pos);  // erase crossing_edges[(4 - i + crossing_first_pos) % 4]
   }
-  for (int i = max_connections; i < 4; ++i) {
+  for (int i = connectivity; i < 4; ++i) {
     edges.insert(edges.begin() + first_pos, crossing_edges[(4 - i + crossing_first_pos) % 4]);
   }
 }
@@ -299,17 +316,15 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int max_number_of_tries) const {
   max_number_of_tries = min(100 + n_crossings * n_crossings, max_number_of_tries);
   
   for (int attempt = 0; attempt < max_number_of_tries; ++attempt) {
-    /* STEP 1: Initialize the Morse list with the first crossing */
-    
-    int girth = 4;  // girth of current Morse list
-    long long cost = 0;
-    
-    // Choose first crossing and orientation, in order
+    /* INITIALIZATION STEP: select first crossing and orientation, and set
+     * the initial values of variables: the edges at the bottom of the upper
+     * knot diagram, the Morse list, the girth and cost of the Morse list
+     */
     auto first_choice = div(attempt % sizeAsInt(pd), 4);
     int first_crossing = first_choice.quot;
     int shift = first_choice.rem;
-    
-    // Edges at the bottom of the upper knot diagram
+    vector< bool > added(n_crossings, false);  // crossings added to the list
+    added[first_crossing] = true;
     vector< int > edges = {
       pd[4 * first_crossing + shift],
       pd[4 * first_crossing + (shift + 1) % 4],
@@ -317,10 +332,9 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int max_number_of_tries) const {
       pd[4 * first_crossing + (shift + 3) % 4]
     };
     
-    /* Add two maxima and the first crossing to Morse list. We also calculate
-     * the orientation of the maxima. The orientation of the knot follows the
-     * edge numbering in increasing order.
-     * There are twice as many edges as crossings.
+    /* Initialize the Morse list with two maxima and the first crossing. We
+     * also need the orientation of the maxima. The orientation of the knot
+     * follows the edge numbering of the planar diagram, in increasing order.
      */
     vector< int > morse_list = {1001, 1, 1001, 3, -2};
     if ((edges[2] - edges[0]) % (2 * n_crossings) == 1) {
@@ -332,35 +346,29 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int max_number_of_tries) const {
     if (shift % 2 == 0) {
       morse_list[4] = 2;
     }
+    int girth = 4;  // girth of current Morse list
+    long long cost = 0;
     
-    vector< bool > added(n_crossings, false);  // added crossings
-    added[first_crossing] = true;
-    //cout << "\n[Da] first crossing " << first_crossing << ": " << edges << endl;
-    
-    /* STEP 2: Iteratively add a maximally connected crossing */
+    /* RECURSIVE STEP: iteratively add a maximally connected crossing */
     for (int n_added = 1; n_added < n_crossings; ++n_added) {
-      // Get maximally connected crossings
+      /* Get maximally connected crossings */
       auto result = get_max_connections(pd, added, edges);
       auto max_connections = result.first;
       auto max_connected_crossings = result.second;
-      
       if (max_connected_crossings.empty()) {
-        //cout << "[Da] no good crossings found" << endl;
         goto attempt_end;  // give up on this attempt
       }
       
-      // Nearly uniform random choice of next crossing
+      /* Randomly select next crossing (almost uniformly) and update
+       * morse_list, edges, cost, and girth accordingly.
+       */
       int next_crossing = max_connected_crossings[rand() % sizeAsInt(max_connected_crossings)];
       added[next_crossing] = true;
-      
-      // Update morse_list, edges, and cost
       extend_Morse_list(morse_list, edges, cost, pd, next_crossing, max_connections, n_added);
-      
       if (sizeAsInt(edges) > girth) {
         girth = sizeAsInt(edges);
       }
       if (girth > min_girth) {
-        //cout << "[Da] girth too big" << endl;
         goto attempt_end;  // give up on this attempt
       }
     }
