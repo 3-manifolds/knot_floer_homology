@@ -168,7 +168,6 @@ inline pair< int, vector< int > > get_max_connections(
  * Depending on the connectivity, we may need to add local extrema. This is
  * detailed below.
  */
-
 inline void extend_Morse_list(
   vector< int >& morse_list,
   vector< int >& edges,
