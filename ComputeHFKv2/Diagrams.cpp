@@ -161,11 +161,11 @@ inline pair< int, vector< int > > GetMaxConnections(
 
 /* Auxiliary function for PlanarDiagram::GetSmallGirthMorseCode.
  * 
- * Extend the Morse list based on the new crossing and its Connectivity.
- * UPDate the bottom edges of the upper knot diagram and the cost of the
+ * Extend the Morse list based on the new crossing and its connectivity.
+ * Update the bottom edges of the upper knot diagram and the cost of the
  * current Morse list.
  * 
- * Depending on the Connectivity, we may need to add local extrema. This is
+ * Depending on the connectivity, we may need to add local extrema. This is
  * detailed below.
  */
 inline void ExtendMorseList(
@@ -279,7 +279,7 @@ inline void ExtendMorseList(
     }
   }
   
-  // UPDate edge list
+  // Update edge list
   for (int i = 0; i < Connectivity; ++i) {
     Edges.erase(Edges.begin() + FirstPos);  // erase CrossingEdges[(4 - i + CrossingFirstPos) % 4]
   }
@@ -300,7 +300,7 @@ inline void ExtendMorseList(
  * 
  * To evaluate the size of the Morse list, we also use a cost function. This
  * cost increases when we need to add local minima, and is greater the more
- * crossings we have Added.
+ * crossings we have added.
  */
 MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
   const vector< int > PD = ListOfTuples;  // local copy of ListOfTuples
@@ -318,7 +318,7 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
     auto FirstChoice = div(Attempt % sizeAsInt(PD), 4);
     int FirstCrossing = FirstChoice.quot;
     int Shift = FirstChoice.rem;
-    vector< bool > Added(nCrossings, false);  // crossings Added to the list
+    vector< bool > Added(nCrossings, false);  // crossings added to the list
     Added[FirstCrossing] = true;
     vector< int > Edges = {
       PD[4 * FirstCrossing + Shift],
@@ -351,10 +351,10 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
       auto MaxConnections = Result.first;
       auto MaxConnectedCrossings = Result.second;
       if (MaxConnectedCrossings.empty()) {
-        goto AttemptEnd;  // give up on this Attempt
+        goto AttemptEnd;  // give up on this attempt
       }
       
-      /* Randomly select next crossing (almost uniformly) and uPDate
+      /* Randomly select next crossing (almost uniformly) and update
        * MorseList, edges, cost, and girth accordingly.
        */
       int NextCrossing = MaxConnectedCrossings[rand() % sizeAsInt(MaxConnectedCrossings)];
@@ -364,11 +364,11 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
         Girth = sizeAsInt(Edges);
       }
       if (Girth > MinGirth) {
-        goto AttemptEnd;  // give up on this Attempt
+        goto AttemptEnd;  // give up on this attempt
       }
     }
     
-    // Update smallest Morse list in the case of a successful Attempt
+    // Update smallest Morse list in the case of a successful attempt
     if (Girth < MinGirth or (Girth == MinGirth and Cost < MinCost)) {
       MinGirth = Girth;
       MinCost = Cost;
@@ -378,7 +378,7 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
     AttemptEnd: ;
   }
   
-  // Catch the case where all Attempts fail
+  // Catch the case where all attempts fail
   if (SmallestMorseList.empty()) {
     MinGirth = -1;
   }
