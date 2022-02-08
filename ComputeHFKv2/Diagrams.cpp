@@ -125,7 +125,7 @@ inline pair< int, vector< int > > GetMaxConnections(
     PosInCrossing.clear();
     for (int i = 0; i < sizeAsInt(Edges); ++i) {
       int j = 0;
-      while (j < 4 and PD[4 * Crossing + j] != Edges[i]) {
+      while (j < 4 && PD[4 * Crossing + j] != Edges[i]) {
         ++j;
       }
       
@@ -136,7 +136,7 @@ inline pair< int, vector< int > > GetMaxConnections(
     }
     
     int Connections = sizeAsInt(PosInEdges);
-    if (PosInEdges.empty() or PosInEdges.back() - PosInEdges.front() > Connections) {
+    if (PosInEdges.empty() || PosInEdges.back() - PosInEdges.front() > Connections) {
       continue;  // crossing attaches nowhere or in disjoint intervals
     }
     for (int i = 0; i + 1 < Connections; ++i) {
@@ -185,10 +185,10 @@ inline void ExtendMorseList(
   int FirstPos = 0;
   while (
     FirstPos < sizeAsInt(Edges)
-    and Edges[FirstPos] != CrossingEdges[0]
-    and Edges[FirstPos] != CrossingEdges[1]
-    and Edges[FirstPos] != CrossingEdges[2]
-    and Edges[FirstPos] != CrossingEdges[3]
+    && Edges[FirstPos] != CrossingEdges[0]
+    && Edges[FirstPos] != CrossingEdges[1]
+    && Edges[FirstPos] != CrossingEdges[2]
+    && Edges[FirstPos] != CrossingEdges[3]
   ) {
     ++FirstPos;
   }
@@ -238,7 +238,7 @@ inline void ExtendMorseList(
   }
   
   // If Connectivity == 2, nothing complicated happens.
-  else if (Connectivity == 2 and CrossingFirstPos % 2 == 0) {
+  else if (Connectivity == 2 && CrossingFirstPos % 2 == 0) {
     MorseList.push_back(FirstPos + 1);
   }
   else if (Connectivity == 2) {
@@ -379,7 +379,7 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
     }
     
     // Update smallest Morse list in the case of a successful attempt
-    if (Girth < MinGirth or (Girth == MinGirth and Cost < MinCost)) {
+    if (Girth < MinGirth || (Girth == MinGirth && Cost < MinCost)) {
       MinGirth = Girth;
       MinCost = Cost;
       SmallestMorseList = MorseList;
