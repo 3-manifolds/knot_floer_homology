@@ -216,11 +216,13 @@ inline void ExtendMorseList(
    *     |   X   | |
    *     |  | |  | |
    * 
+   *        L    R   Positions
+   * 
    */
   if (Connectivity == 1) {
     int LeftPos = (CrossingFirstPos + 1) % 4;
     int RightPos = (CrossingFirstPos + 3) % 4;
-    if ((CrossingEdges[RightPos] - CrossingEdges[LeftPos]) % (sizeAsInt(PD) / 2) == 1) {
+    if ((sizeAsInt(PD) / 2 + CrossingEdges[RightPos] - CrossingEdges[LeftPos]) % (sizeAsInt(PD) / 2) == 1) {
       MorseList.push_back(1000);  // maximum oriented left to right
     }
     else {
@@ -327,15 +329,25 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int MaxNumberOfTries) const {
       PD[4 * FirstCrossing + (Shift + 3) % 4]
     };
     
+    for (int x : Edges) { cout << (x - 1) << " "; } cout << endl;
+    
     /* Initialize the Morse list with two maxima and the first crossing. We
      * also need the orientation of the maxima. The orientation of the knot
-     * follows the edge numbering of the planar diagram, in increasing order.
+     * follows the edge numbering of the planar diagram, in increasing order:
+     * 
+     *             _
+     *            / \   _
+     *           |   \ / \
+     *           |    X   |
+     * 
+     *     Edges 0   1 2  3
+     *
      */
     vector< int > MorseList = {1001, 1, 1001, 3, -2};
-    if ((Edges[2] - Edges[0]) % (2 * nCrossings) == 1) {
-      MorseList[0] = 1000;
+    if ((2 * nCrossings + Edges[2] - Edges[0]) % (2 * nCrossings) == 1) {
+      MorseList[0] = 1000;  // maximum oriented left to right
     }
-    if ((Edges[3] - Edges[1]) % (2 * nCrossings) == 1) {
+    if ((2 * nCrossings + Edges[3] - Edges[1]) % (2 * nCrossings) == 1) {
       MorseList[2] = 1000;
     }
     if (Shift % 2 == 0) {
