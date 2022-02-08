@@ -115,7 +115,7 @@ inline pair< int, vector< int > > get_max_connections(
     }
     
     /* Vectors of positions of edges that belong to the bottom edges of the
-     * upper knot diagram and the current crossing.
+     * upper knot diagram and to the current crossing.
      * 
      * These vectors are static for memory optimization.
      */
@@ -123,7 +123,6 @@ inline pair< int, vector< int > > get_max_connections(
     static vector< int > pos_in_crossing;
     pos_in_edges.clear();
     pos_in_crossing.clear();
-    
     for (int i = 0; i < sizeAsInt(edges); ++i) {
       int j = 0;
       while (j < 4 and pd[4 * crossing + j] != edges[i]) {
@@ -135,13 +134,11 @@ inline pair< int, vector< int > > get_max_connections(
         pos_in_crossing.push_back(j);
       }
     }
+    
     int connections = sizeAsInt(pos_in_edges);
-    
-    if (connections == 0) goto crossing_loop_end;  // i.e. continue
-    else if (pos_in_edges.back() - pos_in_edges.front() > connections) {
-      continue;  // crossing attaches to temp in disjoint intervals
+    if (pos_in_edges.empty() or pos_in_edges.back() - pos_in_edges.front() > connections) {
+      continue;  // crossing attaches nowhere or in disjoint intervals
     }
-    
     for (int i = 0; i + 1 < connections; ++i) {
       if ((4 - pos_in_crossing[i + 1] + pos_in_crossing[i]) % 4 != 1) {
         goto crossing_loop_end;  // crossing does not attach counter-clockwise
@@ -258,7 +255,7 @@ inline void extend_Morse_list(
    *     /  X  |  | |
    *     \_/ | |  | |
    * 
-   * If connectivity == 4, then we need to do this process twice.
+   * If connectivity == 4, then we need to do add and move two minima.
    */
   else if (connectivity >= 3) {
     if (crossing_first_pos % 2 == 0) {
@@ -273,7 +270,7 @@ inline void extend_Morse_list(
     }
     morse_list.push_back(-1000);  // minimum
     
-    // repeat if connectivity == 4
+    // repeat last part if connectivity == 4
     if (connectivity == 4) {
       for (int i = first_pos; i > 0; --i) {
         morse_list.push_back(i);
@@ -283,7 +280,6 @@ inline void extend_Morse_list(
     }
   }
   
-    
   // Update edge list
   for (int i = 0; i < connectivity; ++i) {
     edges.erase(edges.begin() + first_pos);  // erase crossing_edges[(4 - i + crossing_first_pos) % 4]
@@ -293,7 +289,7 @@ inline void extend_Morse_list(
   }
 }
 
-/* Search for a small-girth Morse list. Adapted from ComputeHFKv2/Diagrams.cpp
+/* Search for a small-girth Morse list.
  * 
  * We construct an upper knot diagram, adding crossings one by one. We choose a
  * crossing as the first crossing, and then we successively choose crossings
@@ -301,24 +297,24 @@ inline void extend_Morse_list(
  * will need to add local extrema.
  * 
  * The number of possible Morse lists may be exponentially large, so we limit
- * to a maximal number of tries and test choices randomly.
+ * to a maximal number of tries and make some choices randomly.
  * 
  * To evaluate the size of the Morse list, we also use a cost function. This
  * cost increases when we need to add local minima, and is greater the more
  * crossings we have added.
  */
-MorseCode PlanarDiagram::GetSmallGirthMorseCode(int max_number_of_tries) const {
+MorseCode PlanarDiagram::GetSmallGirthMorseCode(int max_attempts) const {
   const vector< int > pd = ListOfTuples;  // local copy of ListOfTuples
   int n_crossings = sizeAsInt(pd) / 4;
   vector< int > smallest_morse_list;
   int min_girth = 100;  // girth can't go over integer bit size, anyways
   long long min_cost = 1000000000;  // = 1e9
-  max_number_of_tries = min(100 + n_crossings * n_crossings, max_number_of_tries);
+  max_attempts = min(100 + n_crossings * n_crossings, max_attempts);
   
-  for (int attempt = 0; attempt < max_number_of_tries; ++attempt) {
+  for (int attempt = 0; attempt < max_attempts; ++attempt) {
     /* INITIALIZATION STEP: select first crossing and orientation, and set
      * the initial values of variables: the edges at the bottom of the upper
-     * knot diagram, the Morse list, the girth and cost of the Morse list
+     * knot diagram, the Morse list, the girth and cost of the Morse list.
      */
     auto first_choice = div(attempt % sizeAsInt(pd), 4);
     int first_crossing = first_choice.quot;
@@ -346,7 +342,7 @@ MorseCode PlanarDiagram::GetSmallGirthMorseCode(int max_number_of_tries) const {
     if (shift % 2 == 0) {
       morse_list[4] = 2;
     }
-    int girth = 4;  // girth of current Morse list
+    int girth = 4;
     long long cost = 0;
     
     /* RECURSIVE STEP: iteratively add a maximally connected crossing */
