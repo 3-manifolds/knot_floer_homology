@@ -141,7 +141,7 @@ inline pair< int, vector< int > > get_max_connections(
     }
     for (int i = 0; i + 1 < connections; ++i) {
       if ((4 - pos_in_crossing[i + 1] + pos_in_crossing[i]) % 4 != 1) {
-        goto crossing_loop_end;  // crossing does not attach counter-clockwise
+        goto crossing_loop_end;  // crossing does not attach counterclockwise
       }
     }
     
