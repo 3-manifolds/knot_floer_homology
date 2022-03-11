@@ -98,6 +98,10 @@ static py::object MorseCodeAsEvents(const MorseCode &code)
 
 static py::object KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag, int prime) {
   vector<int> Morse = Diag.GetSmallGirthMorseCode(200).GetMorseList();
+  if (Morse.empty()) {
+    py::RaiseValueError("Could not compute a small girth Morse code");
+    return nullptr;
+  }
   Bridge=1;
   Term G1; G1.Alexander = 0; G1.Coeff = 1; G1.Idem = 2;
   vector<Term> Current; Current.push_back(G1);
@@ -212,12 +216,6 @@ PyObject *PDCodeToHFK(const char *pd, int prime, bool complex)
   }
 
   _InitializeMonomialStoreAndMap();
-
-  const MorseCode LastCheckBeforeComputation = diag.GetSmallGirthMorseCode(1);
-  if (LastCheckBeforeComputation.GetMorseList().empty()) {
-      py::RaiseValueError("Could not compute a small girth Morse code");
-      return nullptr;
-  }
 
   if(diag.Alternating() && !complex) {
       py::object o = KnotFloerForAlternatingKnotsAsDict(diag, prime);
