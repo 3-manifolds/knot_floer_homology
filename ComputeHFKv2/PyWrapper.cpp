@@ -94,96 +94,6 @@ static py::object MorseCodeAsEvents(const MorseCode &code)
         { "girth", code.GetGirth() } };
 }
 
-// Variant of KnotFloerForAlternatingKnots with a different output format.
-
-static py::object KnotFloerForAlternatingKnotsAsDict(PlanarDiagram Diag, int prime) {
-  vector<int> Morse = Diag.GetSmallGirthMorseCode(200).GetMorseList();
-  if (Morse.empty()) {
-    py::RaiseValueError("Could not compute a small girth Morse code");
-    return nullptr;
-  }
-  Bridge=1;
-  Term G1; G1.Alexander = 0; G1.Coeff = 1; G1.Idem = 2;
-  vector<Term> Current; Current.push_back(G1);
-  UpwardList.clear();
-  if(Morse[0]==1000) {
-    UpwardList.push_back(1);
-    UpwardList.push_back(0);
-  }
-  if(Morse[0]==1001) {
-    UpwardList.push_back(0);
-    UpwardList.push_back(1);
-  }
-  int Steps=sizeAsInt(Morse);
-  for(int i=2; i< Steps -1 ; i++) {
-    if (Morse[i] == 1000) {
-      int Position = Morse[i+1];
-      Current = AfterMaxAlt(Current,Position);
-      UpwardList[Position-1]=1;
-      UpwardList[Position]=0;
-      i++;
-    } else if (Morse[i] == 1001) {
-      int Position = Morse[i+1];
-      Current = AfterMaxAlt(Current,Position);
-      UpwardList[Position-1] = 0;
-      UpwardList[Position] = 1;
-      i++;
-    } else if (Morse[i]==-1000) {
-	Current=AfterMinAlt(Current);
-    } else if (Morse[i] < 2*Bridge && Morse[i] > -(2*Bridge) && Morse[i] != 0) {
-	Current=AfterCrossingAlt(Current, Morse[i]);
-    }
-  }
-
-  int delta=-Signature(Diag)/2;
-  map<int,int> Range;
-  for(int i = 0; i < sizeAsInt(Current); i++) {
-    Term G = Current[i];
-    Range[G.Alexander] = G.Coeff;
-  }
-  int TotalRank=0;
-  bool LSpaceKnot=true;
-
-  std::map<std::pair<int, int>, int> ranks;
-
-  for(auto X: Range) {
-    int a = X.first, b = abs(X.second);
-    ranks[{a/2, a/2-delta}] = b;
-    TotalRank += b;
-    if (b != 1) {
-      LSpaceKnot = false;
-    }
-  }
-  int MaxAlex = -(*Range.begin()).first;
-  int LeadingCoeff = (*Range.begin()).second;
-
-  int epsilon, tau, nu;
-  tau = delta;
-  if(delta > 0){
-      epsilon = 1;
-      nu = delta;
-  }
-  if(delta == 0){
-      epsilon = 0;
-      nu = 0;
-  }
-  if(delta < 0){
-      epsilon = -1;
-      nu = delta + 1;
-  }
-
-  return std::map<std::string, py::object>{
-      { "modulus", prime },
-      { "ranks", ranks },
-      { "total_rank", TotalRank },
-      { "seifert_genus", MaxAlex / 2 },
-      { "fibered", (LeadingCoeff == 1 || LeadingCoeff == -1) },
-      { "L_space_knot", LSpaceKnot },
-      { "tau", tau },
-      { "nu", nu },
-      { "epsilon", epsilon } };
-}
-
 // The one and only function exported by this module.
 
 PyObject *PDCodeToHFK(const char *pd, int prime, bool complex)
@@ -217,55 +127,50 @@ PyObject *PDCodeToHFK(const char *pd, int prime, bool complex)
 
   _InitializeMonomialStoreAndMap();
 
-  if(diag.Alternating() && !complex) {
-      py::object o = KnotFloerForAlternatingKnotsAsDict(diag, prime);
-      return o.StealObject();
+  const MorseCode M = diag.GetSmallGirthMorseCode();
+  if (M.GetMorseList().empty()) {
+      py::RaiseValueError("Could not compute a small girth Morse code");
+      return nullptr;
+  }
+  if (M.GetGirth() > 2*MAXBRIDGE) {
+      py::RaiseValueError(
+	  "Girth number exceeds " + std::to_string(2 * MAXBRIDGE));
+      return nullptr;
   } else {
-      const MorseCode M = diag.GetSmallGirthMorseCode();
-      if (M.GetMorseList().empty()) {
-	  py::RaiseValueError("Could not compute a small girth Morse code");
-	  return nullptr;
+      KnotFloerComplex KFC = ComputingKnotFloer(M, prime, false);
+      if (KFC.Prime == 0) {
+	py::RaiseRuntimeError("Interrupted!");
+	return nullptr;
       }
-      if (M.GetGirth() > 2*MAXBRIDGE) {
-          py::RaiseValueError(
-              "Girth number exceeds " + std::to_string(2 * MAXBRIDGE));
-          return nullptr;
-      } else {
-          KnotFloerComplex KFC = ComputingKnotFloer(M, prime, false);
-	  if (KFC.Prime == 0) {
-	    py::RaiseRuntimeError("Interrupted!");
-	    return nullptr;
-	  }
-          if (complex){
-              py::object o(
-                  std::map<std::string, py::object>{
-                      { "modulus", prime },
-                      { "ranks", KnotFloerRanks(KFC) },
-                      { "total_rank", KFC.Generators.size() },
-                      { "seifert_genus", Genus(KFC) },
-                      { "fibered", Fibered(KFC) },
-                      { "L_space_knot", LSpaceKnot(KFC) },
-                      { "tau", Tau(KFC) },
-                      { "nu", Nu(KFC) },
-                      { "epsilon", Epsilon(KFC) },
-                      { "generators", KnotFloerGenerators(KFC) },
-                      { "differentials", KnotFloerDifferentials(KFC)}});
-              return o.StealObject();
-          }
-          else{
-              py::object o(
-                  std::map<std::string, py::object>{
-                      { "modulus", prime },
-                      { "ranks", KnotFloerRanks(KFC) },
-                      { "total_rank", KFC.Generators.size() },
-                      { "seifert_genus", Genus(KFC) },
-                      { "fibered", Fibered(KFC) },
-                      { "L_space_knot", LSpaceKnot(KFC) },
-                      { "tau", Tau(KFC) },
-                      { "nu", Nu(KFC) },
-                      { "epsilon", Epsilon(KFC) }});
-              return o.StealObject();
-          }
+      if (complex){
+	  py::object o(
+	      std::map<std::string, py::object>{
+		  { "modulus", prime },
+		  { "ranks", KnotFloerRanks(KFC) },
+		  { "total_rank", KFC.Generators.size() },
+		  { "seifert_genus", Genus(KFC) },
+		  { "fibered", Fibered(KFC) },
+		  { "L_space_knot", LSpaceKnot(KFC) },
+		  { "tau", Tau(KFC) },
+		  { "nu", Nu(KFC) },
+		  { "epsilon", Epsilon(KFC) },
+		  { "generators", KnotFloerGenerators(KFC) },
+		  { "differentials", KnotFloerDifferentials(KFC)}});
+	  return o.StealObject();
+      }
+      else{
+	  py::object o(
+	      std::map<std::string, py::object>{
+		  { "modulus", prime },
+		  { "ranks", KnotFloerRanks(KFC) },
+		  { "total_rank", KFC.Generators.size() },
+		  { "seifert_genus", Genus(KFC) },
+		  { "fibered", Fibered(KFC) },
+		  { "L_space_knot", LSpaceKnot(KFC) },
+		  { "tau", Tau(KFC) },
+		  { "nu", Nu(KFC) },
+		  { "epsilon", Epsilon(KFC) }});
+	  return o.StealObject();
       }
   }
 }

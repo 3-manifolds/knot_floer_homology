@@ -1,3 +1,10 @@
+//
+//  WARNING: These routines are known to give WRONG ANSWERS.  They are
+//  not used by the Python wrapper.
+//
+
+
+
 #include "Alg.h"
 #include "Diagrams.h"
 #include<vector>

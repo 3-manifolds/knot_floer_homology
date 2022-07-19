@@ -55,8 +55,6 @@ map<pair<int,int>, int> KnotFloerDifferentials(const KnotFloerComplex & KFC);
   //prints bigraded ranks:
 void ReportKnotFloerRanks(const KnotFloerComplex &, ostream & os); 
 
-  //An alternative  method for alternating projections:
-void  KnotFloerForAlternatingKnots(PlanarDiagram, ostream & os);
 
 struct ChainComplex
 {vector<int> Generators; vector<ChainArrow> Differential; int Prime;
