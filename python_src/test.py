@@ -23,7 +23,7 @@ def matches_saved_HFK_results():
         result = hfk.pd_to_hfk(repr(pd))
         if datum != result:
             return False
-        return True
+    return True
 
 if __name__ == '__main__':
     import doctest
