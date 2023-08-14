@@ -113,6 +113,12 @@ PyObject *PDCodeToHFK(const char *pd, int prime, bool complex)
       return nullptr;
   }
 
+  const MorseCode lastCheck = diag.GetSmallGirthMorseCode(1);
+  if (lastCheck.GetMorseList().size()==0) {
+      py::RaiseValueError("This PD code cannot be handled, possibly a connected sum?");
+      return nullptr;
+  }
+
   if (prime > 32768) {
             py::RaiseValueError("The prime " + std::to_string(prime) +
                                 " is greater than 2^15.");
@@ -192,6 +198,13 @@ PyObject *PDCodeToMorse(const char *pd)
         return nullptr;
     }
 
+    const MorseCode lastCheck = diag.GetSmallGirthMorseCode(1);
+    if (lastCheck.GetMorseList().size()==0) {
+	py::RaiseValueError(
+            "This PD code cannot be handled, possibly a connected sum?");
+        return nullptr;
+    }
+    
     const bool alternating = diag.Alternating();
 
     // Trying to mimick the behavior PDCodeToHFK...
