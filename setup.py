@@ -50,14 +50,6 @@ except ImportError:
     pass
 
 setup(
-    name='knot_floer_homology',
-    version=version,
-    author='Zoltán Szabó, Marc Culler, Nathan M. Dunfield, and Matthias Goerner',
-    author_email='snappy-help@computop.org',
-    url='https://github.com/3-manifolds/knot_floer_homology',
-    description="Python wrapper for Zoltán Szabó's HFK Calculator",
-    long_description=open('README.rst').read(),
-    long_description_content_type='text/x-rst',
     packages=['knot_floer_homology'],
     package_dir={'knot_floer_homology':'python_src'},
     package_data={'knot_floer_homology':['HFK_data.json']},
@@ -66,6 +58,5 @@ setup(
         'clean':HFKClean,
         },
     zip_safe = False,
-    requires = ['spherogram']
 )
                 

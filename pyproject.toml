@@ -1,3 +1,36 @@
 [build-system]
 requires = ["setuptools", "wheel", "cython"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "knot_floer_homology"
+dynamic = ["version"]
+dependencies = ["spherogram"]
+requires-python = ">=3.8"
+description="Python wrapper for Zoltán Szabó's HFK Calculator"
+authors = [
+  {name = "Zoltán Szabó"},
+  {name = "Marc Culler"},
+  {name = "Nathan M. Dunfield"},
+  {name = "Matthias Goerner"},
+  {email = "snappy-help@computop.org"},
+]
+readme = "README.rst"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
+  "Programming Language :: C++",
+  "Operating System :: OS Independent"
+]
+
+[project.urls]
+Homepage = "https://github.com/3-manifolds/knot_floer_homology"
+
+[tool.setuptools.dynamic]
+version = {attr = "knot_floer_homology.__version__"}
+
+[tool.cibuildwheel]
+build = "cp38* cp39* cp310* cp311* cp312* cp313*"
+skip = "*musllinux*"
+archs = "auto64"
+test-command = "python -m knot_floer_homology.test"
