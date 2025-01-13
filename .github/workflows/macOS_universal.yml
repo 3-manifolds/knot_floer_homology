@@ -1,22 +1,24 @@
-name: Build
+name: Build universal2
 
 on: [push, pull_request]
 
 jobs:
   build_wheels:
-    name: Build wheels on ${{ matrix.os }}
+    name: Build universal2 wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, macos-13, macos-14, windows-2019]
+        os: [macos-13]
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.21.0
-
+        env:
+          CIBW_ARCHS: universal2
+          
       - uses: actions/upload-artifact@v4
         with:
-          name: knot_floer_homology_${{ matrix.os }}_wheels
+          name: knot_floer_homology_universal2_${{ matrix.os }}_wheels
           path: ./wheelhouse/*.whl

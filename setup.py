@@ -13,7 +13,10 @@ if unused_main_cpp in cpp_sources:
     cpp_sources.remove(unused_main_cpp)
 
 if sys.platform.startswith('win'):
-    extra_compile_args = ['/Ox']
+    # '/MT' statically links against the C++ runtime `msvcp140.dll`
+    # which is not part of Windows proper and has various incompatible
+    # versions.
+    extra_compile_args = ['/Ox', '/MT']
 else:
     extra_compile_args = ['-O3', '-std=c++11']
 
